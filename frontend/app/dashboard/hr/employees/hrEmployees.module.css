@@ -1,0 +1,187 @@
+/* ============================================
+   MAIN CONTAINER
+============================================ */
+.container {
+  padding: 28px;
+  font-family: "Inter", sans-serif;
+  color: #222;
+}
+
+.container h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 22px;
+}
+
+/* ============================================
+   FILTER BAR
+============================================ */
+.filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.filters input,
+.filters select {
+  padding: 10px 14px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: 0.2s;
+}
+
+.filters input:focus,
+.filters select:focus {
+  border-color: #3559e0;
+  outline: none;
+}
+
+/* ============================================
+   GRID OF EMPLOYEES
+============================================ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.card {
+  background: #f8faff;
+  border-radius: 14px;
+  padding: 18px;
+  text-align: center;
+  cursor: pointer;
+  border-left: 5px solid #3559e0;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  transition: 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 5px 14px rgba(0,0,0,0.12);
+}
+
+.avatar {
+  width: 70px;
+  height: 70px;
+  background: #3559e0;
+  border-radius: 50%;
+  margin: auto;
+  color: white;
+  font-size: 32px;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card h4 {
+  margin: 12px 0 6px;
+  font-size: 17px;
+}
+
+.role {
+  font-size: 14px;
+  opacity: 0.75;
+}
+
+.dept {
+  font-size: 13px;
+  margin-top: 4px;
+  color: #3559e0;
+}
+
+/* ============================================
+   EMPTY STATE
+============================================ */
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 20px;
+  opacity: 0.6;
+}
+
+/* ============================================
+   MODAL
+============================================ */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 300;
+}
+
+.modalBox {
+  background: white;
+  width: 420px;
+  padding: 24px;
+  border-radius: 14px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+  animation: zoomIn 0.2s ease-out;
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modalBox h3 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.modalBox p {
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.closeBtn {
+  margin-top: 18px;
+  width: 100%;
+  padding: 10px;
+  background: #333;
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.closeBtn:hover {
+  opacity: 0.85;
+}
+
+/* ============================================
+   RESPONSIVENESS
+============================================ */
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 800px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .modalBox {
+    width: 90%;
+  }
+}
+
+@media (max-width: 500px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filters {
+    flex-direction: column;
+  }
+}

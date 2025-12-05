@@ -1,0 +1,185 @@
+/* =====================================
+   MAIN CONTAINER
+===================================== */
+.container {
+  padding: 28px;
+  font-family: "Inter", sans-serif;
+}
+
+.container h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+/* =====================================
+   EXPORT BUTTON
+===================================== */
+.exportBtn {
+  background: #3559e0;
+  color: #fff;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.exportBtn:hover {
+  opacity: 0.85;
+}
+
+/* =====================================
+   GRID LAYOUT
+===================================== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.box {
+  background: #f8faff;
+  padding: 18px;
+  border-radius: 14px;
+  border-left: 5px solid #3559e0;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+}
+
+.box h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* =====================================
+   BAR CHART (Attendance)
+===================================== */
+.barChart {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  height: 140px;
+}
+
+.bar,
+.barLate,
+.barAbsent {
+  width: 18px;
+  border-radius: 6px;
+}
+
+.bar {
+  background: #3559e0;
+}
+
+.barLate {
+  background: #f1a208;
+}
+
+.barAbsent {
+  background: #d62828;
+}
+
+/* =====================================
+   PIE CHART (Leaves)
+===================================== */
+.pieChart {
+  width: 120px;
+  height: 120px;
+  margin: 12px auto;
+  border-radius: 50%;
+  position: relative;
+  background: conic-gradient(
+    #3559e0 0deg 130deg,
+    #f1a208 130deg 260deg,
+    #d62828 260deg 360deg
+  );
+}
+
+/* Legend Colors (Optional)
+.slice1,
+.slice2,
+.slice3 {
+  display: none;
+} */
+
+/* =====================================
+   DEPARTMENT ROWS
+===================================== */
+.deptRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.deptRow:last-child {
+  border-bottom: none;
+}
+
+/* =====================================
+   MODAL (REUSABLE)
+===================================== */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+}
+
+.modalBox {
+  background: white;
+  width: 420px;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+  animation: popIn 0.25s ease-out;
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.closeBtn {
+  margin-top: 18px;
+  width: 100%;
+  padding: 10px;
+  background: #333;
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.closeBtn:hover {
+  opacity: 0.85;
+}
+
+/* =====================================
+   RESPONSIVE DESIGN
+===================================== */
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

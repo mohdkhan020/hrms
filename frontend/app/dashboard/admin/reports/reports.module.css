@@ -1,0 +1,274 @@
+/* ===================================================
+   MAIN PAGE LAYOUT
+=================================================== */
+.container {
+  padding: 20px;
+  font-family: "Poppins", sans-serif;
+  background: #f5f7fb;
+  min-height: 100vh;
+}
+
+.container h2 {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.desc {
+  color: #555;
+  margin-bottom: 14px;
+  font-size: 14px;
+}
+
+/* ===================================================
+   BUTTONS
+=================================================== */
+.generateBtn {
+  background: #2f54eb;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: 16px;
+  transition: 0.2s;
+}
+
+.generateBtn:hover {
+  background: #2446c2;
+}
+
+.generateBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===================================================
+   REPORT AREA (PRINTABLE)
+=================================================== */
+.reportArea {
+  background: white;
+  padding: 28px;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  width: 100%;
+  /* max-width: 1050px; */
+  margin: auto;
+}
+
+.reportHeader {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.reportHeader h1 {
+  font-size: 26px;
+  margin-bottom: 5px;
+}
+
+/* ===================================================
+   SECTION TITLES
+=================================================== */
+.section {
+  margin-top: 22px;
+  margin-bottom: 20px;
+}
+
+.section h2 {
+  font-size: 20px;
+  margin-bottom: 12px;
+  border-left: 4px solid #2f54eb;
+  padding-left: 10px;
+  font-weight: 600;
+}
+
+/* ===================================================
+   GRID LAYOUTS
+=================================================== */
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.box {
+  background: #f7f9ff;
+  border: 1px solid #e3e6f3;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #444;
+}
+
+.box b {
+  color: #2f54eb;
+  font-size: 15px;
+}
+
+/* ===================================================
+   ANALYTICS CARDS
+=================================================== */
+.analyticsRow {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.analyticsCard {
+  flex: 1;
+  min-width: 260px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 18px;
+  border: 1px solid #eef1f7;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.analyticsCard h4 {
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #666;
+}
+
+.analyticsValue {
+  font-size: 26px;
+  font-weight: 700;
+  color: #2f54eb;
+}
+
+.analyticsSub {
+  font-size: 12px;
+  color: #888;
+  margin-top: 4px;
+}
+
+/* ===================================================
+   CHARTS
+=================================================== */
+.chartsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 18px 0;
+}
+
+.chartCard {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 14px 16px;
+  border: 1px solid #eef1f7;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.chartCard h3 {
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.chartWrapper {
+  width: 100%;
+  height: 220px;
+}
+
+/* ===================================================
+   PERFORMANCE LIST
+=================================================== */
+.performerList {
+  padding-left: 18px;
+  font-size: 14px;
+}
+
+.performerList li {
+  margin-bottom: 6px;
+  padding: 8px 10px;
+  background: #f4f4f4;
+  border-radius: 6px;
+  list-style: disc;
+}
+
+/* ===================================================
+   AI SUMMARY
+=================================================== */
+.summaryBox {
+  background: #f6ffed;
+  border: 1px solid #b7eb8f;
+  padding: 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #404040;
+  line-height: 1.5;
+}
+
+/* ===================================================
+   FOOTER
+=================================================== */
+.footer {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+}
+
+.footer p {
+  font-size: 13px;
+  color: #666;
+}
+
+/* ===================================================
+   PRINT MODE (MODULE-SAFE)
+=================================================== */
+@media print {
+  .container {
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  .generateBtn {
+    display: none !important;
+  }
+
+  .chartsRow {
+    page-break-inside: avoid;
+  }
+
+  .section {
+    page-break-inside: avoid;
+  }
+
+  .footer {
+    margin-top: 50px;
+  }
+}
+
+/* ===================================================
+   RESPONSIVE
+=================================================== */
+@media (max-width: 900px) {
+  .grid3 {
+    grid-template-columns: 1fr 1fr;
+  }
+  .chartsRow {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .grid3 {
+    grid-template-columns: 1fr;
+  }
+  .chartsRow {
+    grid-template-columns: 1fr;
+  }
+  .reportArea {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 450px) {
+  .analyticsValue {
+    font-size: 22px;
+  }
+}

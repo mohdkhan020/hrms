@@ -1,0 +1,305 @@
+/* ============================================
+   HR Attendance Page
+   Clean + Professional UI
+============================================ */
+
+.container {
+  padding: 28px;
+  font-family: "Inter", sans-serif;
+  color: #222;
+}
+
+.container h2 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+/* ============================================
+   ACTION BAR (Calendar, Heatmap, Excel)
+============================================ */
+
+.topActions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.toggleBtn {
+  padding: 10px 14px;
+  background: #3559e0;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.toggleBtn:hover {
+  opacity: 0.85;
+}
+
+.excelBtn {
+  padding: 10px 14px;
+  background: #0a8f3a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.excelBtn:hover {
+  opacity: 0.85;
+}
+
+/* ============================================
+   FILTERS (Only Table Mode)
+============================================ */
+
+.filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.filters input,
+.filters select {
+  padding: 10px 12px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #f7f7f7;
+  transition: 0.2s;
+}
+
+.filters input:focus,
+.filters select:focus {
+  border-color: #3559e0;
+  background: white;
+  outline: none;
+}
+
+/* ============================================
+   TABLE
+============================================ */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.table thead tr {
+  background: #eef1ff;
+}
+
+.table th {
+  padding: 14px;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.table td {
+  padding: 14px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+/* STATUS COLORS */
+
+.present {
+  color: #006c47;
+  font-weight: 600;
+}
+
+.absent {
+  color: #d90429;
+  font-weight: 600;
+}
+
+.leave {
+  color: #e09f1f;
+  font-weight: 600;
+}
+
+.late {
+  color: #ff4d4d;
+  font-weight: 600;
+}
+
+/* Timeline Button */
+
+.timelineBtn {
+  padding: 6px 14px;
+  background: #3559e0;
+  border-radius: 6px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.timelineBtn:hover {
+  opacity: 0.85;
+}
+
+/* ============================================
+   PAGINATION
+============================================ */
+
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.pagination button {
+  padding: 6px 12px;
+  background: #3559e0;
+  color: #fff;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.pagination button:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+.pagination .current {
+  padding: 6px 14px;
+  background: #e5e7ff;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+/* ============================================
+   CALENDAR VIEW
+============================================ */
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
+}
+
+.dayBox {
+  padding: 18px;
+  border-radius: 10px;
+  background: #f7f9ff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  text-align: center;
+  font-size: 14px;
+}
+
+.dayBox strong {
+  font-size: 18px;
+  color: #222;
+}
+
+/* ============================================
+   HEATMAP VIEW
+============================================ */
+
+.heatmap {
+  display: grid;
+  grid-template-columns: repeat(30, 1fr);
+  gap: 6px;
+  padding: 10px 0;
+}
+
+.heatBlock {
+  width: 100%;
+  height: 24px;
+  border-radius: 6px;
+}
+
+/* ============================================
+   TIMELINE MODAL
+============================================ */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 300;
+}
+
+.modalBox {
+  background: white;
+  width: 400px;
+  padding: 22px;
+  border-radius: 12px;
+  animation: pop 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+@keyframes pop {
+  from { transform: scale(0.9); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.modalBox h3 {
+  font-size: 20px;
+  margin-bottom: 14px;
+  font-weight: 700;
+}
+
+.timelineRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background: #f7f7f7;
+  margin-bottom: 8px;
+  border-radius: 8px;
+}
+
+.closeBtn {
+  margin-top: 14px;
+  width: 100%;
+  padding: 10px;
+  background: #444;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.closeBtn:hover {
+  opacity: 0.85;
+}
+
+/* ============================================
+   RESPONSIVE
+============================================ */
+
+@media (max-width: 900px) {
+  .calendar {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .heatmap {
+    grid-template-columns: repeat(15, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .filters {
+    flex-direction: column;
+  }
+
+  .calendar {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

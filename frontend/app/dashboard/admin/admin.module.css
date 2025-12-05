@@ -1,0 +1,402 @@
+/* ============= MAIN CONTAINER ============= */
+.container {
+  padding: 20px;
+  font-family: "Poppins", sans-serif;
+  position: relative;
+  background: #f5f7fb;
+}
+
+
+/* ============= TOAST MESSAGE ============= */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #2f54eb;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  z-index: 200;
+  animation: slideIn 0.3s ease;
+  font-weight: 500;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ============= STATS GRID ============= */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.statCard {
+  background: white;
+  padding: 18px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.statCard h4 {
+  color: #666;
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.statCard p {
+  font-size: 26px;
+  font-weight: bold;
+  color: #2f54eb;
+  margin: 0;
+}
+
+
+/* ============= SECTIONS ============= */
+.section {
+  background: white;
+  padding: 18px;
+  border-radius: 10px;
+  margin-top: 25px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.section h3 {
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+
+/* ============= LIST ROWS ============= */
+.listRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.listRow:last-child {
+  border-bottom: none;
+}
+
+
+/* ============= EMPLOYEE INFO ============= */
+.employeeInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar,
+.photoPreview {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatarPlaceholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #d6e4ff;
+  color: #2f54eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.photoPreviewWrapper {
+  margin-top: 10px;
+}
+
+/* ============= BADGES ============= */
+.presentBadge {
+  background: #e6ffed;
+  color: #0f9d58;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.absentBadge {
+  background: #ffe6e6;
+  color: #d93025;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.paidBadge {
+  background: #e6ffed;
+  color: #0f9d58;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.pendingBadge {
+  background: #fff3cd;
+  color: #b8860b;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+
+/* ============= BUTTONS ============= */
+.approveBtn {
+  background: #2f54eb;
+  color: white;
+  padding: 7px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.rejectBtn {
+  background: #ff4d4f;
+  color: white;
+  padding: 7px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  margin-left: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.actionBtn {
+  background: #2f54eb;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.quickActions {
+  margin-top: 30px;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.salarySlipBtn {
+  background: #13c2c2;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  margin-left: 10px;
+}
+
+.payrollActions {
+  display: flex;
+  align-items: center;
+}
+
+
+/* ============= MODAL BACKDROP ============= */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 250;
+}
+
+
+/* ============= MODAL BOX ============= */
+.modal {
+  background: white;
+  padding: 25px;
+  width: 360px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+  animation: pop 0.25s ease;
+}
+
+@keyframes pop {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+
+/* FORM FIELDS */
+.modal label {
+  display: block;
+  font-weight: 500;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.modal input,
+.select {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.saveBtn {
+  background: #2f54eb;
+  color: white;
+  padding: 9px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.cancelBtn {
+  background: #999;
+  color: white;
+  padding: 9px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+
+/* ============= CONTROLS (SEARCH / FILTER / SORT) ============= */
+.controlsRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.searchInput {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  min-width: 180px;
+}
+
+.sortBtn {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+  background: #fafafa;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+
+/* ============= PAGINATION ============= */
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.pageBtn {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #d9d9d9;
+  background: white;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.pageBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pageInfo {
+  font-size: 13px;
+  color: #666;
+}
+
+
+/* ============= CHARTS ============= */
+.chartsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.chartCard {
+  background: white;
+  padding: 18px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.chartCard h3 {
+  margin-bottom: 10px;
+}
+
+.chartWrapper {
+  width: 100%;
+  height: 220px;
+}
+
+
+/* ============= RESPONSIVE DESIGN ============= */
+@media (max-width: 1100px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .chartsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal {
+    width: 92%;
+  }
+
+  .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .pagination {
+    justify-content: center;
+  }
+}
