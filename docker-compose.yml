@@ -1,0 +1,64 @@
+version: "3.9"
+
+services:
+  # ===================== API GATEWAY =====================
+  api-gateway:
+    build: ./backend/api-gateway
+    container_name: api-gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - AUTH_SERVICE_URL=http://auth-service:7000
+    depends_on:
+      - auth-service
+    networks:
+      - microservices
+
+  # ===================== AUTH SERVICE =====================
+  auth-service:
+    build: ./backend/auth-service
+    container_name: auth-service
+    ports:
+      - "7000:7000"
+    environment:
+      - PORT=7000
+      - MONGO_URI=mongodb://mongo:27017/hrms
+      - JWT_SECRET=mysecretkey
+    depends_on:
+      - mongo
+    networks:
+      - microservices
+
+  # ===================== MONGO DATABASE =====================
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - microservices
+
+  # ===================== FRONTEND (NEXT.JS) =====================
+  frontend:
+    build: ./frontend
+    container_name: next-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://api-gateway:8000
+    depends_on:
+      - api-gateway
+    networks:
+      - microservices
+
+# ===================== NETWORK =====================
+networks:
+  microservices:
+    driver: bridge
+
+volumes:
+  mongo_data:

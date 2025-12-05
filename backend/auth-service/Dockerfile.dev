@@ -1,0 +1,10 @@
+#for autorun like nodemon when change detect then it call 
+
+FROM node:22
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+RUN npm install -g nodemon
+COPY . .
+# CMD ["nodemon", "server.js"]
+CMD ["nodemon", "src/index.js"]
