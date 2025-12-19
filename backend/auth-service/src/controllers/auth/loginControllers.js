@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 export const loginControllers = async (req, res) => {
-  console.log('++++++++++++==========>>>>>>>',req.body)
+  console.log("++++++++++++==========>>>>>>>", req.body);
   try {
     const { email, password } = req.body;
 
@@ -40,25 +40,32 @@ export const loginControllers = async (req, res) => {
     );
 
     // 5) Send token inside a cookie
-    return res
-      .cookie("token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "strict",
-        path: "/",
-      })
-      .status(200)
-      .json({
-        message: "Login successful",
-        role: user.role,
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
+    return (
+      res
+        // .cookie("token", token, {
+        //   httpOnly: true,
+        //   secure: true,
+        //   sameSite: "strict",
+        //   path: "/",
+        // })
+        .cookie("token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+          path: "/",
+        })
+        .status(200)
+        .json({
+          message: "Login successful",
           role: user.role,
-        },
-      });
-
+          user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+          },
+        })
+    );
   } catch (err) {
     console.error("LOGIN ERROR:", err);
     return res.status(500).json({ error: "Internal Server Error" });

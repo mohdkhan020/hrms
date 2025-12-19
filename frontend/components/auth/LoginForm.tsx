@@ -108,7 +108,7 @@
 
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "../../context/AuthContext";
 import Link from "next/link";
 import styles from "./login.module.css";
 import { useRouter } from "next/navigation";
@@ -118,22 +118,26 @@ type Form = { email: string; password: string };
 
 export default function LoginForm() {
   const { register, handleSubmit } = useForm<Form>();
-  const { setUser, setToken } = useAuth();
+  const { setUser } = useAuth();
+  const auth = useAuth();
+console.log(auth);
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
   async function onSubmit(data: Form) {
-    debugger
+    debugger;
     setLoading(true);
     setErrorMsg("");
 
     try {
-      debugger
-      console.log(`------------>>>>>>>>url--------->>>>>${process.env.NEXT_PUBLIC_AUTH_URL}`)
-       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/login`,
+      debugger;
+      console.log(
+        `------------>>>>>>>>url--------->>>>>${process.env.NEXT_PUBLIC_AUTH_URL}`
+      );
+      const res = await axios.post(
+        `http://localhost:7000/auth/login`,
         data,
         {
           headers: { "Content-Type": "application/json" },
@@ -149,19 +153,23 @@ export default function LoginForm() {
         //   responseType: "json"
         // }
       );
-debugger
-      const { token, user } = res.data;
-
-      // save login info
-      setToken(token);
+      console.log("res=======>>>>>>",res.data)
+      const { user } = res.data;
       setUser(user);
-
+debugger
       // redirect based on role
       if (user.role === "admin") router.push("/dashboard/admin");
       else if (user.role === "hr") router.push("/dashboard/hr");
-      else router.push("/dashboard/employee");
+      else if (user.role === "employee") router.push("/dashboard/admin");
+      // else router.push("/dashboard");
+      
     } catch (err: any) {
-      setErrorMsg("Invalid email or password"),err;
+      const errorMsg =
+        err.response?.data?.error ||
+        err.response?.data?.message ||
+        "Something went wrong";
+
+      setErrorMsg(errorMsg);
     }
 
     setLoading(false);
@@ -171,7 +179,11 @@ debugger
     <div className={styles.loginBox}>
       <p>Login</p>
 
-      {errorMsg && <p className={styles.error}>{errorMsg}</p>}
+      {errorMsg && (
+        <p style={{ color: "red" }} className={styles.error}>
+          {errorMsg}
+        </p>
+      )}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className={styles.userBox}>
           {/* <input required type="text" name="email" /> */}
@@ -205,9 +217,7 @@ debugger
           <span></span>
           {/* Submit */}
           {/* <button type="submit">Submit</button> */}
-          <button type="submit">
-            {loading ? "Logging in..." : "Submit"}
-          </button>
+          <button type="submit">{loading ? "Logging in..." : "Submit"}</button>
         </a>
       </form>
 

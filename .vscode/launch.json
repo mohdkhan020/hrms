@@ -1,0 +1,46 @@
+// {
+//   "version": "0.2.0",
+//   "configurations": [
+//     {
+//       "type": "node",
+//       "request": "launch",
+//       "name": "Debug API Gateway",
+//       "program": "${workspaceFolder}/backend/api-gateway/src/index.js",
+//       "envFile": "${workspaceFolder}/backend/api-gateway/.env",
+//       "cwd": "${workspaceFolder}/backend/api-gateway",
+//       "console": "integratedTerminal",
+//       "skipFiles": ["<node_internals>/**"]
+//     }
+//   ]
+// }
+
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug API Gateway",
+      "program": "${workspaceFolder}/backend/api-gateway/src/index.js",
+      "envFile": "${workspaceFolder}/backend/api-gateway/.env",
+      "cwd": "${workspaceFolder}/backend/api-gateway",
+
+      "runtimeArgs": ["--experimental-modules"],
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      // nodemon + inspect
+      "type": "node",
+      "request": "launch",
+      "name": "Debug API Gateway (nodemon)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev:debug"],
+      "cwd": "${workspaceFolder}/backend/api-gateway",
+      "envFile": "${workspaceFolder}/backend/api-gateway/.env",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "stopOnEntry": false,
+    }
+  ]
+}

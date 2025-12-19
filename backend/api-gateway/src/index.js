@@ -146,15 +146,18 @@ app.use("/auth", authProxy);
 
 // ===================== HEALTH CHECK =====================
 app.get("/health", (req, res) => {
+  console.log("Loaded ENV → AUTH_SERVICE_URL =", process.env.AUTH_SERVICE_URL);
+
   res.status(200).json({ 
     status: "OK", 
-    service: "API Gateway",
+    service: "APIss Gateway",
+    data:`${process.env.AUTH_SERVICE_URL}`,
     timestamp: new Date().toISOString()
   });
 });
 
 app.get("/", (req, res) => {
-  res.send("API Gateway is running");
+  res.send("APIss Gateway is running");
 });
 
 // ===================== GLOBAL 404 HANDLER =====================

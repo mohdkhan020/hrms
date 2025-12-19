@@ -1,23 +1,4 @@
-// import "./globals.css";
-
-
-// export const metadata = {
-// title: "HRMS Tool",
-// description: "HRMS Tool - Next.js App Router Example",
-// };
-
-
-// export default function RootLayout({ children }: { children: React.ReactNode }) {
-// return (
-// <html lang="en">
-// <body>
-// {children}
-// </body>
-// </html>
-// );
-// }
-
-
+import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 
 export const metadata = {
@@ -37,7 +18,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        {children}
+         <AuthProvider>
+          {children}
+        </AuthProvider>
          <script
           src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
           integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"

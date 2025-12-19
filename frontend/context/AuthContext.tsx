@@ -1,66 +1,64 @@
 "use client";
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { User } from "@/types/user";
 
-
 type AuthContextType = {
-user: User | null;
-token: string | null;
-loading: boolean;
-setUser: (u: User | null) => void;
-setToken: (t: string | null) => void;
-logout: () => void;
+  user: User | null;
+  loading: boolean;
+  setUser: (u: User | null) => void;
+  logout: () => void;
 };
 
-
-export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
-
+export const AuthContext = createContext<AuthContextType>(
+  {} as AuthContextType
+);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-const [user, setUser] = useState<User | null>(null);
-const [token, setTokenState] = useState<string | null>(() => typeof window !== 'undefined' ? localStorage.getItem('token') : null);
-const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
+  // 🔁 Auto-login check (cookie based)
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        const res = await axios.get("/api/auth/me", {
+          withCredentials: true, // 🍪 cookie send hogi
+        });
+        setUser(res.data.user);
+      } catch (err) {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadUser();
+  }, []);
 
-useEffect(() => {
-async function load() {
-if (!token) {
-setLoading(false);
-return;
+  // 🚪 Logout
+  async function logout() {
+    await axios.post(
+      "/api/auth/logout",
+      {},
+      { withCredentials: true }
+    );
+    setUser(null);
+    window.location.href = "/login";
+  }
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        setUser,
+        logout,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
-try {
-const res = await axios.get('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } });
-setUser(res.data.user);
-} catch (e) {
-setUser(null);
-setTokenState(null);
-localStorage.removeItem('token');
-} finally {
-setLoading(false);
-}
-}
-load();
-}, [token]);
 
-
-function setToken(t: string | null) {
-setTokenState(t);
-if (t) localStorage.setItem('token', t);
-else localStorage.removeItem('token');
-}
-
-
-function logout() {
-setUser(null);
-setToken(null);
-window.location.href = '/login';
-}
-
-
-return (
-<AuthContext.Provider value={{ user, token, loading, setUser, setToken, logout }}>
-{children}
-</AuthContext.Provider>
-);
-}
+// ✅ Custom hook
+export const useAuth = () => useContext(AuthContext);

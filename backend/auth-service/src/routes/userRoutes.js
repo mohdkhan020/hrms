@@ -15,7 +15,7 @@ import { loginControllers } from '../controllers/auth/loginControllers.js';
 
 const router = express.Router();
 
-router.post('/auth/signup', signUpControllers); // Add /auth prefix here
-router.post('/auth/login', loginControllers);   // Add /auth prefix here
+router.post('/signup', signUpControllers); // Add /auth prefix here
+router.post('/login', loginControllers);   // Add /auth prefix here
 
 export default router;

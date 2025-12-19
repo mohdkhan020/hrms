@@ -5,8 +5,9 @@ export const meController = async (req, res) => {
   try {
     const token = req.cookies.token;
 
-    if (!token)
-      return res.json({ user: null });
+    if (!token) {
+      return res.status(401).json({ user: null });
+    }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -14,9 +15,15 @@ export const meController = async (req, res) => {
       "_id name email role"
     );
 
-    res.json({ user });
+    if (!user) {
+      return res.status(401).json({ user: null });
+    }
+
+    return res.status(200).json({ user });
 
   } catch (err) {
-    res.json({ user: null });
+    // ❗ invalid / expired token → clear cookie
+    res.clearCookie("token");
+    return res.status(401).json({ user: null });
   }
 };

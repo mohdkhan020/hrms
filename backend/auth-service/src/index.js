@@ -58,7 +58,7 @@ app.get("/health", (req, res) => {
   });
 });
 
-app.use("/", router); // Changed from "/auth/" to "/"
+app.use("/auth", router); // Changed from "/auth/" to "/"
 
 const PORT = process.env.PORT || 7000;
 
