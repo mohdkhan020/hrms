@@ -3,11 +3,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 export const loginControllers = async (req, res) => {
-  console.log("++++++++++++==========>>>>>>>", req.body);
   try {
     const { email, password } = req.body;
-
-    console.log("LOGIN REQUEST:", req.body);
 
     // Validation check
     if (!email || !password) {
@@ -15,9 +12,18 @@ export const loginControllers = async (req, res) => {
     }
 
     // 1) Email check
-    const user = await UserModel.findOne({ email });
+    // const user = await UserModel.findOne({ email });
+    const user = await UserModel.findOne({ email }).select("+password");
+
+    console.log("user===>>",user)
     if (!user) {
       return res.status(400).json({ error: "Invalid email" });
+    }
+
+    if (!user.isVerified) {
+      return res.status(403).json({
+        message: "Please verify your email first",
+      });
     }
 
     // 2) Password check
@@ -42,12 +48,6 @@ export const loginControllers = async (req, res) => {
     // 5) Send token inside a cookie
     return (
       res
-        // .cookie("token", token, {
-        //   httpOnly: true,
-        //   secure: true,
-        //   sameSite: "strict",
-        //   path: "/",
-        // })
         .cookie("token", token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",

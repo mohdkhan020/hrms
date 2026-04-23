@@ -59,11 +59,10 @@ export function SignupForm() {
   ) {
     actions.setSubmitting(true);
     console.log(process.env.NEXT_PUBLIC_AUTH_URL);
-    debugger;
     try {
       debugger;
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_AUTH_URL}/api/auth/signup`,
+        `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/signup`,
         values,
         {
           headers: { "Content-Type": "application/json" },

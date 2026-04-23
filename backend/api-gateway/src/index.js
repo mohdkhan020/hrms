@@ -1,100 +1,4 @@
 
-// import express from "express";
-// import cors from "cors";
-// import { createProxyMiddleware } from "http-proxy-middleware";
-// import dotenv from "dotenv";
-// dotenv.config();
-
-// const app = express();
-// app.use(cors());
-
-// // ===================== GLOBAL ERROR HANDLER FOR PROXY =====================
-// // This runs when target microservice is down or unreachable
-// const proxyErrorHandler = (err, req, res, target) => {
-//   console.error(`❌ Proxy Error → ${target}`);
-//   console.error(err);
-
-//   if (!res.headersSent) {
-//     res.status(500).json({
-//       success: false,
-//       message: "Service temporarily unavailable",
-//       details: err.message,
-//     });
-//   }
-// };
-
-// // ===================== AUTH SERVICE PROXY =====================
-// app.use(
-//   "/auth",
-//   createProxyMiddleware({
-//     target: process.env.AUTH_SERVICE_URL,
-//     changeOrigin: true,
-//     preserveProxyPath: true,
-//     onError: proxyErrorHandler,
-//     onProxyReq: (proxyReq, req, res) => {
-//       console.log(`➡️  Forwarding Request → AUTH: ${req.method} ${req.originalUrl}`);
-//     },
-//     onProxyRes: (proxyRes, req, res) => {
-//       console.log(`⬅️  Response from AUTH: ${proxyRes.statusCode}`);
-//     },
-//   })
-// );
-
-// // ===================== EMPLOYEE SERVICE =====================
-// app.use(
-//   "/employee",
-//   createProxyMiddleware({
-//     target: "http://employee-service:4001",
-//     changeOrigin: true,
-//     pathRewrite: { "^/employee": "/employee" },
-//     onError: proxyErrorHandler,
-//   })
-// );
-
-// // ===================== PAYROLL SERVICE =====================
-// app.use(
-//   "/payroll",
-//   createProxyMiddleware({
-//     target: "http://payroll-service:4002",
-//     changeOrigin: true,
-//     pathRewrite: { "^/payroll": "/payroll" },
-//     onError: proxyErrorHandler,
-//   })
-// );
-
-// // ===================== DEFAULT ROUTE =====================
-// app.get("/", (req, res) => {
-//   res.send("API Gateway is running");
-// });
-
-// // ===================== GLOBAL 404 HANDLER =====================
-// app.use((req, res) => {
-//   res.status(404).json({
-//     success: false,
-//     message: "Route not found in API Gateway",
-//     path: req.originalUrl,
-//   });
-// });
-
-// // ===================== GLOBAL ERROR HANDLER =====================
-// app.use((err, req, res, next) => {
-//   console.error("🔥 Gateway Internal Error:", err);
-
-//   res.status(500).json({
-//     success: false,
-//     message: "Internal Server Error in API Gateway",
-//     error: err.message,
-//   });
-// });
-
-// // ===================== START SERVER =====================
-// const PORT = process.env.PORT || 8000;
-
-// app.listen(PORT, "0.0.0.0", () => {
-//   console.log(`🚀 API Gateway running on ${PORT}`);
-// });
-
-
 
 import express from "express";
 import cors from "cors";
@@ -148,8 +52,8 @@ app.use("/auth", authProxy);
 app.get("/health", (req, res) => {
   console.log("Loaded ENV → AUTH_SERVICE_URL =", process.env.AUTH_SERVICE_URL);
 
-  res.status(200).json({ 
-    status: "OK", 
+  res.status(200).json({
+    status: "OK",
     service: "APIss Gateway",
     data:`${process.env.AUTH_SERVICE_URL}`,
     timestamp: new Date().toISOString()
@@ -172,7 +76,7 @@ app.use((req, res) => {
 // ===================== GLOBAL ERROR HANDLER =====================
 app.use((err, req, res, next) => {
   console.error("🔥 Gateway Internal Error:", err);
-  
+
   res.status(500).json({
     success: false,
     message: "Internal Server Error in API Gateway",

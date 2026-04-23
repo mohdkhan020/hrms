@@ -19,5 +19,5 @@ export async function dbConnect() {
 }
 
 // Agar multiple connections chahiye
-export const connection1 = mongoose.createConnection(process.env.MONGO_URI);
+export const connection = mongoose.createConnection(process.env.MONGO_URI);
 // export const connection2 = mongoose.createConnection(process.env.MONGO_URI_2); // optional

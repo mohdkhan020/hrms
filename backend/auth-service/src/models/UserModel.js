@@ -1,26 +1,32 @@
-import { connection1 } from "../lib/mongodb.js";
+import { connection } from "../lib/mongodb.js";
 import mongoose from "mongoose";
 
-// HRMS User Schema
 const UserSchema = new mongoose.Schema(
   {
-    //   fullName: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    // role: { type: String, enum: ["HR", "Admin"], default: "Admin" },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+    password: { type: String, required: true, select: false },
+
     role: {
       type: String,
       enum: ["admin", "hr", "employee"],
       default: "employee",
+      set: (v) => v?.toLowerCase(), // 🔥 FIX
     },
-    department: { type: String }, // optional
-    phone: { type: String }, // optional
-    //   terms: { type: Boolean, required: true }
-    // resetOTP: Number,
-    // otpExpiry: Number,
+
+    department: { type: String },
+    phone: { type: String },
+    //for  email verification
+    isVerified: { type: Boolean, default: false },
+    verificationToken: { type: String },
+    verificationTokenExpiry: { type: Date },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-// Model
-export const UserModel = connection1.model("Users", UserSchema);
+export const UserModel = connection.model("Users", UserSchema);
