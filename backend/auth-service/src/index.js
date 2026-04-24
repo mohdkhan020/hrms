@@ -3,7 +3,7 @@ import cors from "cors";
 import router from './routes/userRoutes.js'
 import cookieParser from "cookie-parser";
 import { dbConnect } from "./lib/mongodb.js";
-import mongoSanitize from "express-mongo-sanitize";
+// import mongoSanitize from "express-mongo-sanitize";
 import helmet from "helmet"; //👉 Helmet ek middleware hai jo HTTP security headers add karta hai
 // Common protections:
 // X-Content-Type-Options → MIME sniffing block
@@ -15,11 +15,18 @@ import helmet from "helmet"; //👉 Helmet ek middleware hai jo HTTP security he
 
 const app = express();
 
+
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(mongoSanitize()); //Ye automatically: $ . remove kar deta hai request se
+// app.use((req, res, next) => {
+//   console.log("Incoming query:", req.query);
+//   next();
+// });
+// app.use(mongoSanitize()); //Ye automatically: $ . remove kar deta hai request se
 app.use(helmet());
+
 
 // Update CORS to allow API Gateway
 app.use(

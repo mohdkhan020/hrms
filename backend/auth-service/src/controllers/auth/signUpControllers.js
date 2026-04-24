@@ -3,8 +3,8 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { sendVerificationEmail } from "../../utils/sendEmail.js";
 
-user.verificationToken = token;
-user.verificationTokenExpiry = Date.now() + 1000 * 60 * 60; // 1 hour
+// user.verificationToken = token;
+// user.verificationTokenExpiry = Date.now() + 1000 * 60 * 60; // 1 hour
 
 export const signUpControllers = async (req, res) => {
   try {

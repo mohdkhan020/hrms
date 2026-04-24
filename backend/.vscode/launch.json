@@ -1,23 +1,13 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Debug Auth Service ✅",
       "type": "node",
       "request": "launch",
-      "name": "Run nodemon",
       "runtimeExecutable": "nodemon",
+      "program": "${workspaceFolder}/auth-service/src/index.js",
       "cwd": "${workspaceFolder}",
-      "args": []
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Debug Auth Service (Nodemon)",
-      "runtimeExecutable": "nodemon",
-      "runtimeArgs": ["--inspect"],
-      "program": "${workspaceFolder}\\auth-service\\src\\index.js",
       "restart": true,
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
