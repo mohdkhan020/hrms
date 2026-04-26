@@ -2,13 +2,14 @@ import { UserModel } from "../../models/UserModel.js";
 
 export const verifyEmailController = async (req, res) => {
   try {
-    const { token } = req.query;
+    console.log("req===>>>",req.body)
+    const { token } = req.body;
 
     const user = await UserModel.findOne({
       verificationToken: token,
       verificationTokenExpiry: { $gt: Date.now() },
     });
-
+console.log("user===>>>",user)
     if (!user) {
       return res.status(400).json({
         message: "Invalid or expired token",

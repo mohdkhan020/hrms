@@ -80,7 +80,8 @@ export const signUpControllers = async (req, res) => {
     await user.save();
 
     // 📧 send email
-    await sendVerificationEmail(user.email, token);
+    // await sendVerificationEmail(user.email, token);
+    await sendVerificationEmail(user.email, token, user.fullName);
 
     // res.status(201).json({ message: "User successfully created!" });
     res.status(201).json({

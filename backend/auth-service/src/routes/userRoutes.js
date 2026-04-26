@@ -9,6 +9,7 @@ const router = express.Router();
 // router.post('/signup', signUpControllers); // Add /auth prefix here
 router.post("/signup", signUpLimiter, signUpControllers);
 router.post('/login', loginControllers);   // Add /auth prefix here
-router.get("/verify-email", verifyEmailController);
+router.post("/verify-email", verifyEmailController);
 
 export default router;
+ 

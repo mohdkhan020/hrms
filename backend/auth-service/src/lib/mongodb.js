@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 import dotenv from 'dotenv';
 import path from "path";
 
-// dotenv.config();
+dotenv.config();
 // 👇 IMPORTANT FIX
-dotenv.config({
-  path: path.resolve("auth-service/.env"),
-});
+// dotenv.config({
+//   path: path.resolve("auth-service/.env"),
+// });
 
 
 console.log("MONGO_URI:", process.env.MONGO_URI);
