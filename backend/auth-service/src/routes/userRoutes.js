@@ -3,6 +3,7 @@ import { signUpControllers } from '../controllers/auth/signUpControllers.js';
 import { loginControllers } from '../controllers/auth/loginControllers.js';
 import { signUpLimiter } from '../middleware/rateLimiter.js';
 import { verifyEmailController } from "../controllers/auth/verifyEmailController.js";
+import { refreshTokenController } from "../controllers/auth/refreshTokenController.js";
 
 const router = express.Router();
 
@@ -10,6 +11,6 @@ const router = express.Router();
 router.post("/signup", signUpLimiter, signUpControllers);
 router.post('/login', loginControllers);   // Add /auth prefix here
 router.post("/verify-email", verifyEmailController);
+router.post("/refresh-token", refreshTokenController);
 
 export default router;
- 

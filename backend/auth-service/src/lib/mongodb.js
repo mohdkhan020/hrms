@@ -4,12 +4,12 @@ import path from "path";
 
 dotenv.config();
 // 👇 IMPORTANT FIX
-// dotenv.config({
-//   path: path.resolve("auth-service/.env"),
-// });
+dotenv.config({
+  path: path.resolve("auth-service/.env"),
+});
 
 
-console.log("MONGO_URI:", process.env.MONGO_URI);
+// console.log("MONGO_URI:", process.env.MONGO_URI);
 
 if (!process.env.MONGO_URI) throw new Error("Please define MONGO_URI in .env");
 

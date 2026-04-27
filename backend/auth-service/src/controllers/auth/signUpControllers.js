@@ -3,9 +3,6 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { sendVerificationEmail } from "../../utils/sendEmail.js";
 
-// user.verificationToken = token;
-// user.verificationTokenExpiry = Date.now() + 1000 * 60 * 60; // 1 hour
-
 export const signUpControllers = async (req, res) => {
   try {
     const { fullName, email, password, role, department, phone, terms } =
@@ -42,8 +39,12 @@ export const signUpControllers = async (req, res) => {
 
     // Check if user exists
     const existingUser = await UserModel.findOne({ email: normalizedEmail });
-    if (existingUser) {
+    if (existingUser ) {
       return res.status(400).json({ message: "Email already exists" });
+    }
+
+    if(!existingUser.isVerified){
+      return res.status(400).json({ message: "Email already exists Please verify email in your gmail" });
     }
 
     // ✅ Role validation (security)
@@ -64,6 +65,10 @@ export const signUpControllers = async (req, res) => {
 
     // 🔐 generate token
     const token = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(rawToken)
+      .digest("hex");
 
     const user = new UserModel({
       fullName,
@@ -73,17 +78,15 @@ export const signUpControllers = async (req, res) => {
       department,
       phone,
       terms,
-      verificationToken: token,
+      verificationToken: hashedToken,
       verificationTokenExpiry: Date.now() + 60 * 60 * 1000, // 1 hour
     });
 
     await user.save();
 
     // 📧 send email
-    // await sendVerificationEmail(user.email, token);
     await sendVerificationEmail(user.email, token, user.fullName);
 
-    // res.status(201).json({ message: "User successfully created!" });
     res.status(201).json({
       message: "Signup successful. Please verify your email.",
     });

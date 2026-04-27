@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
   {
-    fullName:{type:String},
+    fullName: { type: String },
     email: {
       type: String,
       required: true,
@@ -26,6 +26,32 @@ const UserSchema = new mongoose.Schema(
     isVerified: { type: Boolean, default: false },
     verificationToken: { type: String },
     verificationTokenExpiry: { type: Date },
+
+    // 🔐 Login security (NEW)
+    loginAttempts: {
+      type: Number,
+      default: 0,
+    },
+
+    lockUntil: {
+      type: Date,
+    },
+
+    // 🔄 Token system (NEW)
+    refreshToken: {
+      type: String,
+      select: false,
+    },
+
+    // 📊 Tracking (NEW)
+    lastLogin: {
+      type: Date,
+    },
+
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true },
 );
