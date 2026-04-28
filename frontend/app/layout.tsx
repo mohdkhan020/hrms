@@ -1,6 +1,7 @@
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 
+
 export const metadata = {
   title: "HRMS Tool",
   description: "HRMS Tool - Next.js App Router Example",

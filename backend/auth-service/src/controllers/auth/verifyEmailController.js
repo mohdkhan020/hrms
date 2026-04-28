@@ -1,15 +1,17 @@
 import { UserModel } from "../../models/UserModel.js";
+import crypto from "crypto";
 
 export const verifyEmailController = async (req, res) => {
   try {
-    console.log("req===>>>",req.body)
     const { token } = req.body;
 
+    // 🔥 SAME hashing again
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
     const user = await UserModel.findOne({
-      verificationToken: token,
+      verificationToken: hashedToken,
       verificationTokenExpiry: { $gt: Date.now() },
     });
-console.log("user===>>>",user)
     if (!user) {
       return res.status(400).json({
         message: "Invalid or expired token",

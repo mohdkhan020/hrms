@@ -13,8 +13,8 @@ export const loginControllers = async (req, res) => {
 
     // ✅ Basic validation
     if (!email || !password) {
-      // return res.status(400).json({ error: "Email & Password are required" });
-      return res.status(400).json({ error: "Invalid credentials" });
+      return res.status(400).json({ error: "Email & Password are required" });
+      // return res.status(400).json({ error: "Invalid credentials" });
     }
 
     // ✅ Normalize email
@@ -30,7 +30,8 @@ export const loginControllers = async (req, res) => {
 
     if (!user) {
       await bcrypt.compare(password, dummyHash);
-      return res.status(400).json({ error: "Invalid credentials" });
+      // return res.status(400).json({ error: "Invalid credentials" });
+      return res.status(400).json({ error: "Invalid Email & Password" });
     }
 
     // 🟢 1. Reset expired lock (YAHI ADD KARNA HAI)

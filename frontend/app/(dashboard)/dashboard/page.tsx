@@ -1,7 +1,50 @@
 "use client";
-import styles from "./dashboard.module.css";
+import styles from "../dashboard/dashboard.module.css";
+import { useEffect, useState } from "react";
+import api from "../../../utils/api";
+import { useAuth } from "../../../context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
+
+const { user, setUser } = useAuth();
+const router = useRouter();
+
+const [stats, setStats] = useState<any>(null);
+const [loading, setLoading] = useState(true);
+
+// ✅ protect route
+useEffect(() => {
+  if (!user) {
+    router.push("/login");
+  }
+}, [user]);
+
+// ✅ fetch dashboard data
+useEffect(() => {
+  async function fetchData() {
+    try {
+      const res = await api.get("/dashboard");
+      setStats(res.data);
+    } catch (err) {
+      console.error("Dashboard error", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  fetchData();
+}, []);
+
+// ✅ loading UI
+if (loading) {
+  return <p>Loading dashboard...</p>;
+}
+
+// if (!stats) {
+//   return <p>Failed to load data</p>;
+// }
+
   return (
     <div className={styles.container}>
 

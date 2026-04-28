@@ -1,46 +1,35 @@
 "use client";
-
-
 import LoginForm from "@/components/auth/LoginForm";
+// import styles from "./home.module.css";
+import styles from "../../home.module.css";
 
+export default function Home() {
+  return (
+    <div className={styles.container}>
+      {/* LEFT SECTION */}
+      <div className={styles.left}>
+        <h1 className={styles.logo}>
+          HRMS<span>AI</span>
+        </h1>
 
-export default function LoginPage() {
-return (
-<div style={{ padding: 24 }}>
-<LoginForm />
-</div>
-);
+        <h2 className={styles.heading}>Meet Your Smart HR Assistant</h2>
+        <p className={styles.sub}>
+          Just Ask – chat or speak, AI handles everything.
+        </p>
+
+        <div className={styles.bottomText}>
+          <h3>HURRY UP! LOGIN</h3>
+          <h4>&</h4>
+          <h3>START USING NOW</h3>
+        </div>
+
+        <div className={styles.botIcon}>🤖</div>
+      </div>
+
+      {/* RIGHT SECTION (LOGIN) */}
+      <div className={styles.right}>
+        <LoginForm />
+      </div>
+    </div>
+  );
 }
-
-
-
-
-// import { NextResponse } from "next/server";
-
-
-// export async function POST(req: Request) {
-// const data = await req.json();
-// const { email, password } = data;
-
-
-// // Simple mock auth — replace with real auth-service call
-// if (!email || !password) {
-// return NextResponse.json({ error: "Missing" }, { status: 400 });
-// }
-
-
-// // mock users
-// const users = [
-// { id: "1", name: "Admin", email: "admin@local", role: "ADMIN" },
-// { id: "2", name: "HR", email: "hr@local", role: "HR" },
-// { id: "3", name: "Employee", email: "emp@local", role: "EMPLOYEE" }
-// ];
-
-
-// const user = users.find((u) => u.email === email);
-// if (!user) return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
-
-
-// // return a mock token + user
-// return NextResponse.json({ token: `mock-token-${user.id}`, user });
-// }

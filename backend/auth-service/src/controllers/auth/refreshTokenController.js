@@ -4,6 +4,9 @@ import { UserModel } from "../../models/UserModel.js";
 
 export const refreshTokenController = async (req, res) => {
   try {
+
+    console.log("cookies===>",req.cookies)
+
     // ✅ 1. Get refresh token from cookie
     const refreshToken = req.cookies.refreshToken;
 

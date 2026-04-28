@@ -1,8 +1,8 @@
-
 "use client";
 
 import { useForm } from "react-hook-form";
-import axios from "axios";
+// import axios from "axios";
+import api from "../../utils/api"; // ✅ axios instance with interceptor
 import { useAuth } from "../../context/AuthContext";
 import Link from "next/link";
 import styles from "./login.module.css";
@@ -14,51 +14,45 @@ type Form = { email: string; password: string };
 export default function LoginForm() {
   const { register, handleSubmit } = useForm<Form>();
   const { setUser } = useAuth();
-  const auth = useAuth();
-console.log(auth);
+  // const auth = useAuth();
+  // console.log(auth);
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
   async function onSubmit(data: Form) {
-    debugger;
     setLoading(true);
     setErrorMsg("");
 
     try {
-      debugger;
-      console.log(
-        `------------>>>>>>>>url--------->>>>>${process.env.NEXT_PUBLIC_AUTH_URL}`
-      );
-      const res = await axios.post(
-        `http://localhost:7000/auth/login`,
-        data,
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-        //        { headers: {
-        //     "Content-Type": "application/json",
-        //     Authorization: `Bearer ${token}`
-        //   },
-        //   withCredentials: true,
-        //   params: { lang: "en" },
-        //   timeout: 5000,
-        //   responseType: "json"
-        // }
-      );
-      console.log("res=======>>>>>>",res.data)
-      // const { user } = res.data;
-      const { user, accessToken } = res.data;
-      setUser(user);
-debugger
-      // redirect based on role
-      if (user.role === "admin") router.push("/dashboard/admin");
-      else if (user.role === "hr") router.push("/dashboard/hr");
-      else if (user.role === "employee") router.push("/dashboard/admin");
-      // else router.push("/dashboard");
+      // const res = await axios.post(
+      //   `http://localhost:7000/auth/login`,
+      //   data,
+      //   {
+      //     headers: { "Content-Type": "application/json" },
+      //     withCredentials: true,
+      //   }
+      //   //        { headers: {
+      //   //     "Content-Type": "application/json",
+      //   //     Authorization: `Bearer ${token}`
+      //   //   },
+      //   //   withCredentials: true,
+      //   //   params: { lang: "en" },
+      //   //   timeout: 5000,
+      //   //   responseType: "json"
+      //   // }
+      // );
 
+      // ✅ use api (interceptor enabled)
+      const res = await api.post("/auth/login", data);
+
+      const { user } = res.data;
+
+      // ✅ save user in context
+      setUser(user);
+      router.push("/dashboard");
+      
     } catch (err: any) {
       const errorMsg =
         err.response?.data?.error ||
@@ -66,9 +60,9 @@ debugger
         "Something went wrong";
 
       setErrorMsg(errorMsg);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }
 
   return (

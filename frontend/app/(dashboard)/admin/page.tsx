@@ -293,8 +293,10 @@ export default function AdminDashboard() {
 
   return (
     <div className={styles.container}>
-      <h2>Admin Dashboard</h2>
-
+      <div className="d-flex flex-right">
+        <h2>Admin Dashboard</h2>
+        <button>sign out</button>
+      </div>
       {/* TOAST */}
       {toast && <div className={styles.toast}>{toast}</div>}
 
@@ -442,14 +444,16 @@ export default function AdminDashboard() {
               className={styles.sortBtn}
               onClick={() => handleSortChange("name")}
             >
-              Sort Name {sortField === "name" ? (sortDir === "asc" ? "↑" : "↓") : ""}
+              Sort Name{" "}
+              {sortField === "name" ? (sortDir === "asc" ? "↑" : "↓") : ""}
             </button>
 
             <button
               className={styles.sortBtn}
               onClick={() => handleSortChange("salary")}
             >
-              Sort Salary {sortField === "salary" ? (sortDir === "asc" ? "↑" : "↓") : ""}
+              Sort Salary{" "}
+              {sortField === "salary" ? (sortDir === "asc" ? "↑" : "↓") : ""}
             </button>
           </div>
         </div>

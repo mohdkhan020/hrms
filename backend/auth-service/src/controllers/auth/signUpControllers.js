@@ -19,7 +19,7 @@ export const signUpControllers = async (req, res) => {
     }
 
     // ✅ Password strength
-    if (password.length < 6) {
+    if (password?.length < 6) {
       return res.status(400).json({ message: "Password too short" });
     }
 
@@ -43,9 +43,9 @@ export const signUpControllers = async (req, res) => {
       return res.status(400).json({ message: "Email already exists" });
     }
 
-    if(!existingUser.isVerified){
-      return res.status(400).json({ message: "Email already exists Please verify email in your gmail" });
-    }
+    // if(!existingUser?.isVerified){
+    //   return res.status(400).json({ message: "Email already exists Please verify email in your gmail" });
+    // }
 
     // ✅ Role validation (security)
     const allowedRoles = ["admin", "hr", "employee"];
@@ -67,7 +67,7 @@ export const signUpControllers = async (req, res) => {
     const token = crypto.randomBytes(32).toString("hex");
     const hashedToken = crypto
       .createHash("sha256")
-      .update(rawToken)
+      .update(token)
       .digest("hex");
 
     const user = new UserModel({

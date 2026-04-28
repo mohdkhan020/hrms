@@ -3,7 +3,9 @@ import { UserModel } from "../../models/UserModel.js";
 
 export const meController = async (req, res) => {
   try {
-    const token = req.cookies.token;
+    const token = req?.cookies?.token;
+    // const token = req.cookies;
+    console.log(token)
 
     if (!token) {
       return res.status(401).json({ user: null });
