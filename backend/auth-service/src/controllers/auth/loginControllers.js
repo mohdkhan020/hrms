@@ -85,7 +85,7 @@ export const loginControllers = async (req, res) => {
     const token = jwt.sign(
       { id: user._id },
       process.env.JWT_SECRET,
-      { expiresIn: "15m" }, // short expiry (best practice)
+      { expiresIn: "1m" }, // short expiry (best practice)
     );
 
     // ✅ Refresh Token (long life)
@@ -111,10 +111,16 @@ export const loginControllers = async (req, res) => {
     await user.save();
 
     // ✅ Send cookies
+    // res.cookie("token", token, {
+    //   httpOnly: true,
+    //   sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    //   secure: process.env.NODE_ENV === "production",
+    //   maxAge: 15 * 60 * 1000, // 15 min
+    // });
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-      secure: process.env.NODE_ENV === "production",
+      secure: false, // ✅ local me false
+      sameSite: "lax", // ✅ IMPORTANT
       maxAge: 15 * 60 * 1000, // 15 min
     });
 

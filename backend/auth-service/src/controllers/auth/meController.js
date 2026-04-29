@@ -3,6 +3,7 @@ import { UserModel } from "../../models/UserModel.js";
 
 export const meController = async (req, res) => {
   try {
+    console.log("request====>",req?.cookies)
     const token = req?.cookies?.token;
     // const token = req.cookies;
     console.log(token)

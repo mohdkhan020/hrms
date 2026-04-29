@@ -41,7 +41,7 @@ export const refreshTokenController = async (req, res) => {
     }
 
     // ✅ 6. Create NEW access token
-    const newAccessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "15m",
     });
 
@@ -61,12 +61,18 @@ export const refreshTokenController = async (req, res) => {
     await user.save();
 
     // ✅ 8. Set cookies again
-    res.cookie("token", newAccessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-      maxAge: 15 * 60 * 1000,
-    });
+    // res.cookie("token", token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    //   maxAge: 15 * 60 * 1000,
+    // });
+     res.cookie("token", token, {
+       httpOnly: true,
+       secure: false, // ✅ local me false
+       sameSite: "lax", // ✅ IMPORTANT
+       maxAge: 15 * 60 * 1000, // 15 min
+     });
 
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
