@@ -99,7 +99,7 @@ console.log("user====>>>",user)
     Array<{ label: string; href: string; icon: string }>
   > = {
     admin: [
-      { label: "Dashboard", href: "/dashboard", icon: "bi-speedometer2" },
+      { label: "Dashboard", href: "/admin", icon: "bi-speedometer2" },
       { label: "Employees", href: "/dashboard/employees", icon: "bi-people" },
       {
         label: "Departments",

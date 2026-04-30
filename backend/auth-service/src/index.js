@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import router from './routes/userRoutes.js'
+import router from './modules/auth/auth.routes.js'
 import cookieParser from "cookie-parser";
 import { dbConnect } from "./lib/mongodb.js";
 // import mongoSanitize from "express-mongo-sanitize";

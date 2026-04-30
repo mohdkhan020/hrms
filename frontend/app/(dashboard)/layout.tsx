@@ -1,8 +1,23 @@
 "use client";
 
 import Sidebar from "@/components/layout/Sidebar";
+import { useAuth } from "../../context/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function DashboardLayout({ children }: any) {
+const { user, loading ,setUser } = useAuth();
+const router = useRouter();
+
+
+  // ✅ protect route
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [user, loading]);
+
+
   return (
     <div className="d-flex">
       {/* SIDEBAR */}

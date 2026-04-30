@@ -7,13 +7,13 @@ import { useAuth } from "../../context/AuthContext";
 import Link from "next/link";
 import styles from "./login.module.css";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Form = { email: string; password: string };
 
 export default function LoginForm() {
   const { register, handleSubmit } = useForm<Form>();
-  const { setUser } = useAuth();
+  const { user,setUser } = useAuth();
   // const auth = useAuth();
   // console.log(auth);
   const router = useRouter();
@@ -52,7 +52,7 @@ export default function LoginForm() {
       // ✅ save user in context
       setUser(user);
       router.push("/dashboard");
-      
+
     } catch (err: any) {
       const errorMsg =
         err.response?.data?.error ||
@@ -64,6 +64,13 @@ export default function LoginForm() {
       setLoading(false);
     }
   }
+
+useEffect(() => {
+  if (user) {
+    router.push("/dashboard");
+  }
+}, [user]);
+
 
   return (
     <div className={styles.loginBox}>

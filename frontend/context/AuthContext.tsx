@@ -11,7 +11,7 @@ type AuthContextType = {
 };
 
 export const AuthContext = createContext<AuthContextType>(
-  {} as AuthContextType
+  {} as AuthContextType,
 );
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -22,9 +22,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     async function loadUser() {
       try {
+        debugger
         const res = await axios.get("http://localhost:7000/auth/me", {
           withCredentials: true, // 🍪 cookie send hogi
         });
+        debugger
         setUser(res.data.user);
       } catch (err) {
         setUser(null);
@@ -37,11 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // 🚪 Logout
   async function logout() {
-    await axios.post(
-      "/api/auth/logout",
-      {},
-      { withCredentials: true }
-    );
+    await axios.post("/api/auth/logout", {}, { withCredentials: true });
     setUser(null);
     window.location.href = "/login";
   }
