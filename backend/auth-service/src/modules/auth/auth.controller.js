@@ -5,8 +5,8 @@ import crypto from "crypto";
 import { sendVerificationEmail } from "../../utils/sendEmail.js";
 
 // OPTIONAL: configurable constants
-const MAX_LOGIN_ATTEMPTS = 7;
-const LOCK_TIME = 1 * 60 * 1000; // 15 minutes
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCK_TIME = 2 * 60 * 1000; // 15 minutes
 
 export const loginController = async (req, res) => {
   try {
@@ -35,6 +35,13 @@ export const loginController = async (req, res) => {
       return res.status(400).json({ error: "Invalid Email & Password" });
     }
 
+    // ✅ Check email verified
+    if (!user.isVerified) {
+      return res.status(403).json({
+        message: "Please verify your email first",
+      });
+    }
+
     // 🟢 1. Reset expired lock (YAHI ADD KARNA HAI)
     if (user.lockUntil && user.lockUntil < Date.now()) {
       user.loginAttempts = 0;
@@ -48,20 +55,13 @@ export const loginController = async (req, res) => {
       });
     }
 
-    // ✅ Check email verified
-    if (!user.isVerified) {
-      return res.status(403).json({
-        message: "Please verify your email first",
-      });
-    }
-
     if (!user.isActive) {
       return res.status(403).json({ error: "Account disabled" });
     }
 
     // ✅ Password compare
     const isMatch = await bcrypt.compare(password, user.password);
-
+    console.log("match===>>", isMatch);
     if (!isMatch) {
       // ❗ increase login attempts
       user.loginAttempts = (user.loginAttempts || 0) + 1;
@@ -73,7 +73,7 @@ export const loginController = async (req, res) => {
 
       await user.save();
 
-      return res.status(400).json({ error: "Invalid credentials" });
+      return res.status(400).json({ error: "Invalid Password" });
     }
 
     // 3) JWT Secret check to avoid crash
@@ -96,6 +96,7 @@ export const loginController = async (req, res) => {
       { expiresIn: "7d" },
     );
 
+    //Convert RefreshToken into hashFormat for safety purpose
     const hashedRefreshToken = crypto
       .createHash("sha256")
       .update(refreshToken)
@@ -152,16 +153,38 @@ export const loginController = async (req, res) => {
   }
 };
 
-export const logoutController = (req, res) => {
-  res
-    .clearCookie("token", {
+export const logoutController = async (req, res) => {
+  try {
+    const userId = req.user.id;
+console.log("userId====>>>>",userId)
+    // ✅ refresh token DB se hatao
+    await UserModel.findByIdAndUpdate(userId, {
+      refreshToken: null,
+    });
+
+    res.clearCookie("token", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       sameSite: "strict",
-      path: "/",
-    })
-    .status(200)
-    .json({ message: "Logged out successfully" });
+    });
+
+    // ✅ cookie clear karo
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Logout successful",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Logout failed",
+    });
+  }
 };
 
 export const meController = async (req, res) => {
