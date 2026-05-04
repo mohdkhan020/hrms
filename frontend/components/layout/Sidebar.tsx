@@ -86,10 +86,12 @@
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { usePathname } from "next/navigation";
+import axios from "axios";
+import router from "next/router";
 // import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function Sidebar() {
-  const { user } = useAuth();
+  const { user,setUser } = useAuth();
   const path = usePathname();
 console.log("user====>>>",user)
   if (!user) return null;
@@ -161,6 +163,19 @@ console.log("user====>>>",user)
 
   const sidebarMenu = menuByRole[user.role] || [];
 
+const  logout = async() => {
+  await axios.post(
+    "http://localhost:7000/auth/logout",
+    {},
+    { withCredentials: true },
+  );
+
+  // router.push("/login");
+  setUser(null);
+
+  router.replace("/login"); // 👈 IMPORTANT
+}
+
   return (
     <aside
       className="d-flex flex-column flex-shrink-0 p-3 text-bg-dark"
@@ -205,7 +220,7 @@ console.log("user====>>>",user)
 
       {/* FOOTER ACTIONS */}
       <div>
-        <button className="btn btn-outline-light w-100 mb-2">Logout</button>
+        <button className="btn btn-outline-light w-100 mb-2" onClick={logout}>Logout</button>
         <small className="text-secondary">© 2026 HRMS AI</small>
       </div>
     </aside>
