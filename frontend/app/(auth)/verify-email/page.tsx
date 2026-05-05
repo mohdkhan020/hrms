@@ -30,7 +30,6 @@ export default function VerifyEmailPage() {
         `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/verify-email`,
         { token }
       );
-debugger
       setStatus("success");
       setMessage(res.data.message || "Email verified successfully!");
 
@@ -49,7 +48,7 @@ debugger
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-lg rounded-2xl p-8 text-center w-[400px]">
-        
+
         {/* 🔄 Loader */}
         {status === "loading" && (
           <div className="flex flex-col items-center gap-4">
