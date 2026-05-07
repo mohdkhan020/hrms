@@ -148,7 +148,7 @@ export default function HrDashboard() {
 
   return (
     <div className={styles.container}>
-      <h2>HR Dashboard</h2>
+      <h2>Dashboard</h2>
       <p className={styles.subtitle}>
         Real-time view of attendance, approvals, onboarding & HR operations
       </p>

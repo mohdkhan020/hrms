@@ -24,7 +24,6 @@ export default function LoginForm() {
   async function onSubmit(data: Form) {
     setLoading(true);
     setErrorMsg("");
-
     try {
       // const res = await axios.post(
       //   `http://localhost:7000/auth/login`,
@@ -51,7 +50,7 @@ export default function LoginForm() {
 
       // ✅ save user in context
       setUser(user);
-      router.push("/dashboard");
+      // router.push("/admin");
 
     } catch (err: any) {
       const errorMsg =
@@ -67,7 +66,21 @@ export default function LoginForm() {
 
 useEffect(() => {
   if (user) {
-    router.push("/dashboard");
+    console.log("user==>", user);
+
+    switch (user.role) {
+      case "admin":
+        router.push("/admin/dashboard");
+        break;
+      case "hr":
+        router.push("/hr/dashboard");
+        break;
+      case "employees":
+        router.push("/employees/dashboard");
+        break;
+      default:
+        router.push("/unauthorized"); // unknown role ke liye
+    }
   }
 }, [user]);
 

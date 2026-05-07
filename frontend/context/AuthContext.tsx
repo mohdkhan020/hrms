@@ -1,6 +1,5 @@
 "use client";
 import React, { createContext, useEffect, useState, useContext } from "react";
-import axios from "axios";
 import { User } from "@/types/user";
 import api from "@/utils/api";
 import { usePathname } from "next/navigation";
@@ -34,9 +33,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     async function loadUser() {
       try {
-        // const res = await axios.get("http://localhost:7000/auth/me", {
-        //   withCredentials: true, // 🍪 cookie send hogi
-        // });
          const res = await api.get("/auth/me");
         setUser(res.data.user);
       } catch (err) {
@@ -50,7 +46,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // 🚪 Logout
   async function logout() {
-    // await axios.post("http://localhost:7000/auth/logout", {}, { withCredentials: true });
     await api.post("/auth/logout");
     setUser(null);
     window.location.href = "/login";
