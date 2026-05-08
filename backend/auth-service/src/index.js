@@ -3,7 +3,9 @@ import cors from "cors";
 import router from './modules/auth/auth.routes.js'
 import cookieParser from "cookie-parser";
 
+
 import { dbConnect } from "./lib/mongodb.js";
+import { pool } from "./lib/postgresql.js";
 // import mongoSanitize from "express-mongo-sanitize";
 import helmet from "helmet"; //👉 Helmet ek middleware hai jo HTTP security headers add karta hai
 // Common protections:
@@ -39,8 +41,15 @@ app.use(
   })
 );
 
-// ✅ DB connect FIRST
+// ✅ MongoDB connect FIRST
 await dbConnect();
+
+// PostgreSQl DB Connect
+pool
+  .connect()
+  .then(() => console.log("DB Connected"))
+  .catch((err) => console.log(err));
+
 
 // Health check endpoint
 app.get("/health", (req, res) => {
@@ -53,6 +62,26 @@ app.get("/health", (req, res) => {
 
 //routes
 app.use("/auth", router);
+
+
+app.get("/employees", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM employees");
+    res.json(result.rows);
+
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.get("/attendance", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM attendance");
+    res.json(result.rows);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 //server ke upar security shield 🛡️
 app.use((err, req, res, next) => {

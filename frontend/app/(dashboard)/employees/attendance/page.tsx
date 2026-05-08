@@ -2,327 +2,599 @@
 
 import React, { useState, useEffect } from "react";
 import {
-  CalendarDays,
-  CheckCircle,
   Clock,
-  XCircle,
-  Plus,
+  MapPin,
+  CheckCircle,
+  AlertCircle,
+  ArrowUpRight,
+  ArrowDownRight,
+  Download,
   Loader2,
-  Briefcase,
-  Activity,
-  ChevronRight,
-  X
+  Zap,
+  Timer,
+  LayoutGrid,
+  History,
 } from "lucide-react";
-import api from "@/utils/api";
 
-export default function LeaveManagementPage() {
+export default function AttendancePage() {
   const [loading, setLoading] = useState(true);
-  const [leaveBalances, setLeaveBalances] = useState<any[]>([]);
-  const [leaveHistory, setLeaveHistory] = useState<any[]>([]);
-
-  // Modal & Form State
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [leaveForm, setLeaveForm] = useState({
-    type: "Paid Leave",
-    startDate: "",
-    endDate: "",
-    reason: "",
+  const [isClockedIn, setIsClockedIn] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [attendanceData, setAttendanceData] = useState<any[]>([]);
+  const [stats, setStats] = useState({
+    avgHours: "0h 0m",
+    onTimeRate: "0%",
+    totalDays: "0",
   });
 
+  // Real-time clock update
   useEffect(() => {
-    // Mocking API Data for the Premium UI
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Fetch initial data
+  useEffect(() => {
+    // Simulating API Call
     setTimeout(() => {
-      setLeaveBalances([
-        { type: "Paid Leaves (PL)", total: 15, used: 4, color: "#3b82f6" },
-        { type: "Sick Leaves (SL)", total: 7, used: 2, color: "#22c55e" },
-        { type: "Casual Leaves (CL)", total: 7, used: 5, color: "#a855f7" },
+      setStats({
+        avgHours: "8h 15m",
+        onTimeRate: "92%",
+        totalDays: "22",
+      });
+      setAttendanceData([
+        {
+          date: "07 May, 2026",
+          inTime: "09:25 AM",
+          outTime: null,
+          status: "Active",
+          duration: "Ongoing",
+        },
+        {
+          date: "06 May, 2026",
+          inTime: "09:35 AM",
+          outTime: "06:40 PM",
+          status: "Late",
+          duration: "9h 05m",
+        },
+        {
+          date: "05 May, 2026",
+          inTime: "09:15 AM",
+          outTime: "06:10 PM",
+          status: "On Time",
+          duration: "8h 55m",
+        },
+        {
+          date: "04 May, 2026",
+          inTime: "09:28 AM",
+          outTime: "06:30 PM",
+          status: "On Time",
+          duration: "9h 02m",
+        },
+        {
+          date: "01 May, 2026",
+          inTime: "10:05 AM",
+          outTime: "07:15 PM",
+          status: "Late",
+          duration: "9h 10m",
+        },
       ]);
-      setLeaveHistory([
-        {
-          id: "REQ-001",
-          dates: "12 May - 14 May, 2026",
-          days: 3,
-          type: "Sick Leave",
-          status: "Approved",
-          appliedOn: "10 May, 2026",
-        },
-        {
-          id: "REQ-002",
-          dates: "20 Jun - 20 Jun, 2026",
-          days: 1,
-          type: "Casual Leave",
-          status: "Pending",
-          appliedOn: "18 Jun, 2026",
-        },
-        {
-          id: "REQ-003",
-          dates: "01 Apr - 05 Apr, 2026",
-          days: 5,
-          type: "Paid Leave",
-          status: "Approved",
-          appliedOn: "15 Mar, 2026",
-        },
-      ]);
+      setIsClockedIn(true); // Default state for demo
       setLoading(false);
     }, 1000);
   }, []);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Approved":
-        return { bg: "rgba(34, 197, 94, 0.1)", text: "#22c55e", icon: <CheckCircle size={14} /> };
-      case "Pending":
-        return { bg: "rgba(245, 158, 11, 0.1)", text: "#f59e0b", icon: <Clock size={14} /> };
-      case "Rejected":
-        return { bg: "rgba(239, 68, 68, 0.1)", text: "#ef4444", icon: <XCircle size={14} /> };
-      default:
-        return { bg: "rgba(255,255,255,0.1)", text: "#fff", icon: <Clock size={14} /> };
-    }
-  };
-
-  // Format Date to "DD MMM, YYYY"
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return "";
-    const options: Intl.DateTimeFormatOptions = { day: "2-digit", month: "short", year: "numeric" };
-    return new Date(dateStr).toLocaleDateString("en-GB", options);
-  };
-
-  // Calculate Days between two dates
-  const calculateDays = (start: string, end: string) => {
-    if (!start || !end) return 0;
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-    const diffTime = endDate.getTime() - startDate.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-    return diffDays > 0 ? diffDays : 0;
-  };
-
-  // Handle Form Submission
-  const handleApplyLeave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!leaveForm.startDate || !leaveForm.endDate) return alert("Please select dates");
-
-    setIsSubmitting(true);
-
+  const handleClockAction = async () => {
     try {
       // API call simulation
-      // await api.post("/employee/leave/apply", leaveForm);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // await api.post("/employee/attendance/mark", { type: isClockedIn ? "OUT" : "IN" });
+      setIsClockedIn(!isClockedIn);
 
-      const daysCount = calculateDays(leaveForm.startDate, leaveForm.endDate);
-      const newLeave = {
-        id: `REQ-00${leaveHistory.length + 4}`,
-        dates: `${formatDate(leaveForm.startDate)} - ${formatDate(leaveForm.endDate)}`,
-        days: daysCount,
-        type: leaveForm.type,
-        status: "Pending",
-        appliedOn: formatDate(new Date().toISOString()),
-      };
-
-      // Optimistic update: Add to top of history
-      setLeaveHistory([newLeave, ...leaveHistory]);
-
-      // Reset form and close modal
-      setLeaveForm({ type: "Paid Leave", startDate: "", endDate: "", reason: "" });
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to apply leave");
-    } finally {
-      setIsSubmitting(false);
+      // Optmistic update to top row if clocking out
+      if (isClockedIn) {
+        const newData = [...attendanceData];
+        newData[0].outTime = currentTime.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        newData[0].status = "Completed";
+        newData[0].duration = "8h 45m"; // Mock calculation
+        setAttendanceData(newData);
+      }
+    } catch (err) {
+      alert("Verification failed. Please try again.");
     }
   };
 
   if (loading) {
     return (
-      <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#05070a" }}>
+      <div
+        style={{
+          height: "100%",
+          minHeight: "60vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Loader2 className="animate-spin" color="#6366f1" size={40} />
       </div>
     );
   }
 
   return (
-    <div style={{ padding: "40px 50px", background: "#05070a", minHeight: "100vh", color: "#f1f5f9", position: "relative", overflow: "hidden", fontFamily: "'DM Sans', sans-serif" }}>
-      {/* Background Blurs */}
-      <div style={{ position: "absolute", top: "10%", right: "10%", width: "300px", height: "300px", background: "rgba(168, 85, 247, 0.08)", filter: "blur(120px)", borderRadius: "50%", zIndex: 0 }} />
-      <div style={{ position: "absolute", bottom: "10%", left: "5%", width: "400px", height: "400px", background: "rgba(59, 130, 246, 0.08)", filter: "blur(150px)", borderRadius: "50%", zIndex: 0 }} />
+    <div
+      style={{
+        padding: "32px",
+        color: "#f1f5f9",
+        fontFamily: "'DM Sans', sans-serif",
+      }}
+    >
+      {/* Header */}
+      <header className="attendance-header">
+        <div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              color: "#22c55e",
+              fontSize: 13,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: 1.5,
+              marginBottom: 8,
+            }}
+          >
+            <Zap size={14} fill="#22c55e" /> Daily Log
+          </div>
+          <h1
+            style={{
+              fontSize: 32,
+              fontWeight: 800,
+              fontFamily: "'DM Serif Display', serif",
+              color: "#fff",
+            }}
+          >
+            Attendance Tracker
+          </h1>
+        </div>
+        <button className="export-btn">
+          <Download size={18} /> Export Log
+        </button>
+      </header>
 
-      <div style={{ position: "relative", zIndex: 1 }}>
-        {/* Header */}
-        <header style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 48 }}>
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, color: "#6366f1", fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 8 }}>
-              <Briefcase size={14} /> Time Off Management
-            </div>
-            <h1 style={{ fontSize: 38, fontWeight: 800, fontFamily: "'DM Serif Display', serif", background: "linear-gradient(to right, #fff, #94a3b8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              My Leaves
-            </h1>
+      {/* Main Grid: Left (Stats + Table) | Right (Clock Widget) */}
+      <div className="attendance-layout">
+        {/* Left Column */}
+        <div className="left-column">
+          {/* Stats Section */}
+          <div className="stats-grid">
+            {[
+              {
+                label: "Avg Work Hours",
+                value: stats.avgHours,
+                icon: Timer,
+                color: "#3b82f6",
+                bg: "rgba(59, 130, 246, 0.1)",
+              },
+              {
+                label: "On-Time Ratio",
+                value: stats.onTimeRate,
+                icon: CheckCircle,
+                color: "#22c55e",
+                bg: "rgba(34, 197, 94, 0.1)",
+              },
+              {
+                label: "Present Days",
+                value: stats.totalDays,
+                icon: LayoutGrid,
+                color: "#a855f7",
+                bg: "rgba(168, 85, 247, 0.1)",
+              },
+            ].map((s, i) => (
+              <div key={i} className="stat-card">
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 12,
+                    background: s.bg,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: 16,
+                  }}
+                >
+                  <s.icon size={20} color={s.color} />
+                </div>
+                <p style={{ color: "#94a3b8", fontSize: 13, fontWeight: 600 }}>
+                  {s.label}
+                </p>
+                <h3
+                  style={{
+                    fontSize: 26,
+                    fontWeight: 700,
+                    marginTop: 4,
+                    color: "#f1f5f9",
+                  }}
+                >
+                  {s.value}
+                </h3>
+              </div>
+            ))}
           </div>
 
-          <button
-            onClick={() => setIsModalOpen(true)}
-            style={{ display: "flex", alignItems: "center", gap: 10, background: "linear-gradient(135deg, #6366f1, #4338ca)", border: "none", padding: "14px 24px", borderRadius: "14px", color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer", boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.4)", transition: "all 0.3s ease" }}
-          >
-            <Plus size={18} /> Apply for Leave
-          </button>
-        </header>
-
-        {/* Leave Balances Grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24, marginBottom: 40 }}>
-          {leaveBalances.map((balance, index) => {
-            const percentage = Math.round((balance.used / balance.total) * 100);
-            return (
-              <div key={index} style={{ background: "rgba(15, 17, 23, 0.5)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "24px", padding: "28px", backdropFilter: "blur(10px)" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-                  <h3 style={{ fontSize: 16, fontWeight: 600, color: "#e2e8f0" }}>{balance.type}</h3>
-                  <div style={{ background: `${balance.color}15`, color: balance.color, padding: "6px 12px", borderRadius: "10px", fontSize: 12, fontWeight: 700 }}>
-                    {balance.total - balance.used} Left
-                  </div>
-                </div>
-
-                <div style={{ display: "flex", alignItems: "flex-end", gap: 8, marginBottom: 16 }}>
-                  <span style={{ fontSize: 36, fontWeight: 800, fontFamily: "'DM Serif Display', serif", lineHeight: 1 }}>{balance.used}</span>
-                  <span style={{ color: "#64748b", fontSize: 14, paddingBottom: 4 }}>/ {balance.total} Used</span>
-                </div>
-
-                {/* Premium Progress Bar */}
-                <div style={{ height: 6, background: "rgba(255,255,255,0.05)", borderRadius: 10, overflow: "hidden" }}>
-                  <div style={{ height: "100%", width: `${percentage}%`, background: balance.color, borderRadius: 10, boxShadow: `0 0 10px ${balance.color}88` }} />
-                </div>
-              </div>
-            );
-          })}
+          {/* History Table */}
+          <div className="history-section">
+            <div className="history-header">
+              <h3
+                style={{
+                  fontSize: 16,
+                  fontWeight: 700,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                }}
+              >
+                <History size={16} color="#a5b4fc" /> Recent Punches
+              </h3>
+            </div>
+            <div className="table-responsive">
+              <table className="premium-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Timeline</th>
+                    <th>Status</th>
+                    <th className="hide-mobile">Duration</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {attendanceData.map((row, i) => (
+                    <tr key={i}>
+                      <td style={{ fontWeight: 600, color: "#f1f5f9" }}>
+                        {row.date}
+                      </td>
+                      <td>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 12,
+                          }}
+                        >
+                          <span
+                            style={{
+                              color: "#22c55e",
+                              fontSize: 13,
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 4,
+                              fontWeight: 600,
+                            }}
+                          >
+                            <ArrowUpRight size={14} /> {row.inTime}
+                          </span>
+                          <span style={{ color: "#64748b" }}>—</span>
+                          <span
+                            style={{
+                              color: row.outTime ? "#ef4444" : "#64748b",
+                              fontSize: 13,
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 4,
+                              fontWeight: row.outTime ? 600 : 400,
+                            }}
+                          >
+                            <ArrowDownRight size={14} />{" "}
+                            {row.outTime || "Active Now"}
+                          </span>
+                        </div>
+                      </td>
+                      <td>
+                        <span
+                          style={{
+                            background:
+                              row.status === "Late"
+                                ? "rgba(245, 158, 11, 0.1)"
+                                : "rgba(34, 197, 94, 0.1)",
+                            color:
+                              row.status === "Late" ? "#f59e0b" : "#22c55e",
+                            padding: "6px 12px",
+                            borderRadius: "8px",
+                            fontSize: 12,
+                            fontWeight: 700,
+                          }}
+                        >
+                          {row.status}
+                        </span>
+                      </td>
+                      <td className="hide-mobile" style={{ color: "#94a3b8" }}>
+                        {row.duration}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
-        {/* Leave History Table */}
-        <div style={{ background: "rgba(15, 17, 23, 0.4)", borderRadius: "28px", border: "1px solid rgba(255,255,255,0.05)", overflow: "hidden" }}>
-          <div style={{ padding: "28px 32px", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <h3 style={{ fontSize: 18, fontWeight: 700, display: "flex", alignItems: "center", gap: 10 }}>
-              <Activity size={18} color="#a5b4fc" /> Leave Request History
-            </h3>
-            <span style={{ color: "#6366f1", fontSize: 13, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>
-              View Policy <ChevronRight size={14} />
-            </span>
+        {/* Right Column: Clock Widget */}
+        <div className="right-column">
+          {/* Interactive Clock Card */}
+          <div className="clock-widget">
+            <p
+              style={{
+                color: "#6366f1",
+                fontWeight: 700,
+                fontSize: 12,
+                letterSpacing: 1.5,
+                marginBottom: 8,
+                textTransform: "uppercase",
+              }}
+            >
+              Current Session
+            </p>
+            <h2
+              style={{
+                fontSize: 42,
+                fontWeight: 800,
+                fontFamily: "'DM Serif Display', serif",
+                marginBottom: 32,
+                color: isClockedIn ? "#22c55e" : "#f1f5f9",
+                textShadow: isClockedIn
+                  ? "0 0 20px rgba(34, 197, 94, 0.4)"
+                  : "none",
+                transition: "all 0.3s ease",
+              }}
+            >
+              {currentTime.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+              })}
+            </h2>
+
+            {/* Glowing Orb Button */}
+            <div className="orb-container">
+              {/* Spinning borders */}
+              <div
+                className="orb-ring ring-1"
+                style={{
+                  borderColor: isClockedIn
+                    ? "rgba(34, 197, 94, 0.3)"
+                    : "rgba(99, 102, 241, 0.3)",
+                }}
+              ></div>
+              <div
+                className="orb-ring ring-2"
+                style={{
+                  borderColor: isClockedIn
+                    ? "rgba(34, 197, 94, 0.5)"
+                    : "rgba(99, 102, 241, 0.5)",
+                }}
+              ></div>
+
+              <button
+                onClick={handleClockAction}
+                className={`orb-btn ${isClockedIn ? "clocked-in" : "clocked-out"}`}
+              >
+                <Clock size={36} />
+                <span>{isClockedIn ? "Clock Out" : "Clock In"}</span>
+              </button>
+            </div>
+
+            <div className="location-badge">
+              <MapPin size={14} color="#6366f1" /> HQ - Sector 62 (Verified)
+            </div>
           </div>
 
-          <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
-            <thead>
-              <tr style={{ background: "rgba(0,0,0,0.2)", color: "#64748b", fontSize: 12, textTransform: "uppercase", letterSpacing: 1 }}>
-                <th style={{ padding: "20px 32px", fontWeight: 600 }}>Date Range</th>
-                <th style={{ padding: "20px 32px", fontWeight: 600 }}>Leave Type</th>
-                <th style={{ padding: "20px 32px", fontWeight: 600 }}>Duration</th>
-                <th style={{ padding: "20px 32px", fontWeight: 600 }}>Applied On</th>
-                <th style={{ padding: "20px 32px", fontWeight: 600 }}>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {leaveHistory.map((req: any, i) => {
-                const statusStyle = getStatusColor(req.status);
-                return (
-                  <tr key={i} className="leave-row" style={{ borderTop: "1px solid rgba(255,255,255,0.03)", transition: "all 0.2s ease" }}>
-                    <td style={{ padding: "24px 32px" }}>
-                      <div style={{ fontWeight: 600, color: "#f1f5f9", marginBottom: 4 }}>{req.dates}</div>
-                      <div style={{ fontSize: 12, color: "#64748b" }}>ID: {req.id}</div>
-                    </td>
-                    <td style={{ padding: "24px 32px", color: "#e2e8f0", fontWeight: 500 }}>{req.type}</td>
-                    <td style={{ padding: "24px 32px", color: "#94a3b8" }}>{req.days} Day{req.days > 1 ? "s" : ""}</td>
-                    <td style={{ padding: "24px 32px", color: "#94a3b8", fontSize: 13 }}>{req.appliedOn}</td>
-                    <td style={{ padding: "24px 32px" }}>
-                      <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: statusStyle.bg, color: statusStyle.text, padding: "6px 14px", borderRadius: "10px", fontSize: 12, fontWeight: 700 }}>
-                        {statusStyle.icon} {req.status}
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          {/* System Alert */}
+          <div className="system-alert">
+            <div
+              style={{
+                flexShrink: 0,
+                width: 36,
+                height: 36,
+                borderRadius: 10,
+                background: "rgba(245, 158, 11, 0.15)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <AlertCircle size={18} color="#f59e0b" />
+            </div>
+            <p style={{ fontSize: 13, color: "#cbd5e1", lineHeight: 1.6 }}>
+              <b style={{ color: "#f59e0b" }}>Note:</b> Regular punch-in time is
+              09:30 AM. Repeated late entries may require manager approval.
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* --- Apply Leave Modal --- */}
-      {isModalOpen && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 50, padding: 20 }}>
-          <div style={{ background: "linear-gradient(165deg, #0f172a 0%, #05070a 100%)", border: "1px solid rgba(99, 102, 241, 0.3)", borderRadius: "24px", padding: "32px", width: "100%", maxWidth: "500px", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.8)", position: "relative" }}>
-
-            <button onClick={() => setIsModalOpen(false)} style={{ position: "absolute", top: 24, right: 24, background: "transparent", border: "none", color: "#64748b", cursor: "pointer" }}>
-              <X size={24} />
-            </button>
-
-            <h2 style={{ fontSize: 24, fontWeight: 700, fontFamily: "'DM Serif Display', serif", marginBottom: 8, color: "#f1f5f9" }}>Submit Leave Request</h2>
-            <p style={{ color: "#94a3b8", fontSize: 14, marginBottom: 24 }}>Please fill in the details for your time off.</p>
-
-            <form onSubmit={handleApplyLeave} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-
-              <div>
-                <label style={{ display: "block", color: "#e2e8f0", fontSize: 13, fontWeight: 600, marginBottom: 8 }}>Leave Type</label>
-                <select
-                  className="modal-input"
-                  value={leaveForm.type}
-                  onChange={(e) => setLeaveForm({ ...leaveForm, type: e.target.value })}
-                  style={{ width: "100%", background: "rgba(15, 17, 23, 0.8)", border: "1px solid rgba(255,255,255,0.1)", padding: "14px", borderRadius: "12px", color: "#fff", fontSize: 14, outline: "none" }}
-                >
-                  <option value="Paid Leave">Paid Leave (PL)</option>
-                  <option value="Sick Leave">Sick Leave (SL)</option>
-                  <option value="Casual Leave">Casual Leave (CL)</option>
-                </select>
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-                <div>
-                  <label style={{ display: "block", color: "#e2e8f0", fontSize: 13, fontWeight: 600, marginBottom: 8 }}>Start Date</label>
-                  <input
-                    type="date"
-                    required
-                    className="modal-input"
-                    value={leaveForm.startDate}
-                    onChange={(e) => setLeaveForm({ ...leaveForm, startDate: e.target.value })}
-                    style={{ width: "100%", background: "rgba(15, 17, 23, 0.8)", border: "1px solid rgba(255,255,255,0.1)", padding: "14px", borderRadius: "12px", color: "#fff", fontSize: 14, outline: "none", colorScheme: "dark" }}
-                  />
-                </div>
-                <div>
-                  <label style={{ display: "block", color: "#e2e8f0", fontSize: 13, fontWeight: 600, marginBottom: 8 }}>End Date</label>
-                  <input
-                    type="date"
-                    required
-                    className="modal-input"
-                    value={leaveForm.endDate}
-                    onChange={(e) => setLeaveForm({ ...leaveForm, endDate: e.target.value })}
-                    style={{ width: "100%", background: "rgba(15, 17, 23, 0.8)", border: "1px solid rgba(255,255,255,0.1)", padding: "14px", borderRadius: "12px", color: "#fff", fontSize: 14, outline: "none", colorScheme: "dark" }}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label style={{ display: "block", color: "#e2e8f0", fontSize: 13, fontWeight: 600, marginBottom: 8 }}>Reason (Optional)</label>
-                <textarea
-                  rows={3}
-                  className="modal-input"
-                  placeholder="Provide a brief reason..."
-                  value={leaveForm.reason}
-                  onChange={(e) => setLeaveForm({ ...leaveForm, reason: e.target.value })}
-                  style={{ width: "100%", background: "rgba(15, 17, 23, 0.8)", border: "1px solid rgba(255,255,255,0.1)", padding: "14px", borderRadius: "12px", color: "#fff", fontSize: 14, outline: "none", resize: "none" }}
-                />
-              </div>
-
-              <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
-                <button type="button" onClick={() => setIsModalOpen(false)} style={{ flex: 1, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", padding: "14px", borderRadius: "12px", color: "#fff", fontWeight: 600, cursor: "pointer", transition: "0.2s" }}>
-                  Cancel
-                </button>
-                <button type="submit" disabled={isSubmitting} style={{ flex: 1, background: "linear-gradient(135deg, #6366f1, #4338ca)", border: "none", padding: "14px", borderRadius: "12px", color: "#fff", fontWeight: 700, cursor: isSubmitting ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, transition: "0.2s" }}>
-                  {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : "Submit Request"}
-                </button>
-              </div>
-
-            </form>
-          </div>
-        </div>
-      )}
-
+      {/* --- CSS STYLING --- */}
       <style>{`
-        .leave-row:hover { background: rgba(255,255,255,0.03) !important; transform: scale(1.002); }
-        .modal-input:focus { border-color: #6366f1 !important; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        /* Header */
+        .attendance-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-end;
+          margin-bottom: 32px;
+        }
+        .export-btn {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          padding: 10px 16px;
+          border-radius: 12px;
+          color: #f1f5f9;
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        .export-btn:hover { background: rgba(255, 255, 255, 0.1); }
+
+        /* Layout Grid */
+        .attendance-layout {
+          display: grid;
+          grid-template-columns: 1fr 350px;
+          gap: 32px;
+        }
+        .left-column { display: flex; flex-direction: column; gap: 32px; }
+        .right-column { display: flex; flex-direction: column; gap: 24px; }
+
+        /* Stats Grid */
+        .stats-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 20px;
+        }
+        .stat-card {
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          border-radius: 20px;
+          padding: 24px;
+          backdrop-filter: blur(10px);
+        }
+
+        /* History Section */
+        .history-section {
+          background: rgba(255, 255, 255, 0.02);
+          border-radius: 24px;
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          overflow: hidden;
+        }
+        .history-header {
+          padding: 24px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .table-responsive { overflow-x: auto; }
+        .premium-table {
+          width: 100%;
+          border-collapse: collapse;
+          text-align: left;
+        }
+        .premium-table th {
+          padding: 16px 24px;
+          background: rgba(0, 0, 0, 0.2);
+          color: #64748b;
+          font-size: 12px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          font-weight: 600;
+        }
+        .premium-table td {
+          padding: 20px 24px;
+          border-top: 1px solid rgba(255, 255, 255, 0.03);
+          font-size: 14px;
+        }
+        .premium-table tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+        /* Clock Widget (The Hero Element) */
+        .clock-widget {
+          background: linear-gradient(165deg, #0f172a 0%, #05070a 100%);
+          border-radius: 28px;
+          padding: 40px 24px;
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          text-align: center;
+          box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+          position: relative;
+          overflow: hidden;
+        }
+
+        /* Orb Animation Setup */
+        .orb-container {
+          position: relative;
+          width: 200px;
+          height: 200px;
+          margin: 0 auto 40px auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .orb-ring {
+          position: absolute;
+          inset: 0;
+          border-radius: 50%;
+          border: 2px dashed transparent;
+          transition: border-color 0.4s ease;
+        }
+        .ring-1 { animation: spin 15s linear infinite; }
+        .ring-2 { inset: 10px; border-style: solid; opacity: 0.3; animation: spin 25s linear reverse infinite; }
+
+        .orb-btn {
+          width: 150px;
+          height: 150px;
+          border-radius: 50%;
+          border: none;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          color: #fff;
+          cursor: pointer;
+          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .orb-btn span { font-size: 18px; font-weight: 800; }
+
+        .clocked-out {
+          background: linear-gradient(135deg, #6366f1, #4338ca);
+          box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4);
+        }
+        .clocked-in {
+          background: linear-gradient(135deg, #ef4444, #b91c1c);
+          box-shadow: 0 15px 35px rgba(239, 68, 68, 0.4);
+        }
+        .orb-btn:active { transform: scale(0.9); }
+
+        .location-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: rgba(255, 255, 255, 0.03);
+          padding: 8px 16px;
+          border-radius: 12px;
+          color: #94a3b8;
+          font-size: 13px;
+          font-weight: 600;
+          border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Alert Box */
+        .system-alert {
+          background: rgba(245, 158, 11, 0.05);
+          border: 1px solid rgba(245, 158, 11, 0.1);
+          border-radius: 20px;
+          padding: 20px;
+          display: flex;
+          gap: 16px;
+          align-items: flex-start;
+        }
+
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* --- RESPONSIVE MEDIA QUERIES --- */
+        @media (max-width: 1024px) {
+          .attendance-layout { grid-template-columns: 1fr; }
+          .right-column { flex-direction: row; }
+          .clock-widget { flex: 1; }
+          .system-alert { flex: 1; }
+        }
+
+        @media (max-width: 768px) {
+          .attendance-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+          .export-btn { width: 100%; justify-content: center; }
+          .stats-grid { grid-template-columns: 1fr; }
+          .right-column { flex-direction: column; }
+          .hide-mobile { display: none; }
+        }
       `}</style>
     </div>
   );
