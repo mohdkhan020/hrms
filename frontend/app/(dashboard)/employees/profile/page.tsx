@@ -17,6 +17,7 @@ import {
   Award,
 } from "lucide-react";
 import api from "@/utils/api";
+import DotCircleLoader from "@/loader/DotCircleLoader";
 
 export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
@@ -104,7 +105,8 @@ export default function ProfilePage() {
           background: "#05070a",
         }}
       >
-        <Loader2 className="animate-spin" color="#6366f1" size={40} />
+        {/* <Loader2 className="animate-spin" color="#6366f1" size={40} /> */}
+          <DotCircleLoader />
       </div>
     );
   }
@@ -326,7 +328,8 @@ export default function ProfilePage() {
                   }}
                 >
                   {isSaving ? (
-                    <Loader2 size={16} className="animate-spin" />
+                    // <Loader2 size={16} className="animate-spin" />
+                      <DotCircleLoader />
                   ) : (
                     <Save size={16} />
                   )}{" "}

@@ -14,6 +14,7 @@ import {
   X,
   Calendar as CalendarIcon,
 } from "lucide-react";
+import DotCircleLoader from "@/loader/DotCircleLoader";
 
 export default function LeavesPage() {
   const [loading, setLoading] = useState(true);
@@ -171,7 +172,8 @@ export default function LeavesPage() {
           justifyContent: "center",
         }}
       >
-        <Loader2 className="animate-spin" color="#6366f1" size={40} />
+        {/* <Loader2 className="animate-spin" color="#6366f1" size={40} /> */}
+          <DotCircleLoader />
       </div>
     );
   }

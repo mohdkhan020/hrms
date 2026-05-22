@@ -15,6 +15,7 @@ import {
   LayoutGrid,
   History,
 } from "lucide-react";
+import DotCircleLoader from "@/loader/DotCircleLoader";
 
 export default function AttendancePage() {
   const [loading, setLoading] = useState(true);
@@ -117,7 +118,8 @@ export default function AttendancePage() {
           justifyContent: "center",
         }}
       >
-        <Loader2 className="animate-spin" color="#6366f1" size={40} />
+        {/* <Loader2 className="animate-spin" color="#6366f1" size={40} /> */}
+        <DotCircleLoader />
       </div>
     );
   }

@@ -13,6 +13,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import api from "@/utils/api";
+import DotCircleLoader from "@/loader/DotCircleLoader";
 
 export default function PremiumHolidays() {
   const [loading, setLoading] = useState(true);
@@ -91,10 +92,20 @@ export default function PremiumHolidays() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#05070a",
+           backgroundColor: "rgb(33 37 41)",
         }}
       >
-        <Loader2 className="animate-spin" color="#6366f1" size={40} />
+      {/* <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+
+        }}
+      > */}
+        {/* <Loader2 className="animate-spin" color="#6366f1" size={40} /> */}
+        <DotCircleLoader />
       </div>
     );
   }

@@ -13,6 +13,7 @@ import {
   Wallet,
 } from "lucide-react";
 import api from "@/utils/api";
+import DotCircleLoader from "@/loader/DotCircleLoader";
 
 export default function PayrollPage() {
   const [loading, setLoading] = useState(true);
@@ -95,7 +96,8 @@ export default function PayrollPage() {
           background: "#05070a",
         }}
       >
-        <Loader2 className="animate-spin" color="#6366f1" size={40} />
+        {/* <Loader2 className="animate-spin" color="#6366f1" size={40} /> */}
+          <DotCircleLoader />
       </div>
     );
   }
@@ -188,7 +190,8 @@ export default function PayrollPage() {
             }}
           >
             {downloadingId === selectedSlip.id ? (
-              <Loader2 size={18} className="animate-spin" />
+              // <Loader2 size={18} className="animate-spin" />
+                <DotCircleLoader />
             ) : (
               <Download size={18} />
             )}
@@ -589,7 +592,8 @@ export default function PayrollPage() {
                         }}
                       >
                         {downloadingId === slip.id ? (
-                          <Loader2 size={14} className="animate-spin" />
+                          // <Loader2 size={14} className="animate-spin" />
+                            <DotCircleLoader />
                         ) : (
                           <Download size={14} />
                         )}
