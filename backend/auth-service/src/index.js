@@ -94,3 +94,20 @@ const PORT = process.env.PORT || 7000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Auth service running on http://localhost:${PORT}`);
 });
+
+
+
+
+
+// | Layer        | Technology               |
+// | ------------ | ------------------------ |
+// | Frontend     | Next.js + TypeScript     |
+// | Backend      | Node.js + Express        |
+// | ORM          | Prisma                   |
+// | Database     | PostgreSQL               |
+// | Cache        | Redis                    |
+// | Auth         | JWT + Refresh Token      |
+// | File Storage | AWS S3 / Cloudinary / Supabase     |
+// | Queue        | BullMQ                   |
+// | Realtime     | Socket.IO                |
+// | Deployment   | Docker + Nginx + VPS/AWS |
