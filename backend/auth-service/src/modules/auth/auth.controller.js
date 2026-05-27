@@ -189,7 +189,7 @@ console.log("userId====>>>>",userId)
 
 export const meController = async (req, res) => {
   try {
-    console.log("request====>", req?.cookies);
+    // console.log("request====>", req?.cookies);
     const token = req?.cookies?.token;
     // const token = req.cookies;
     console.log(token);
@@ -201,7 +201,7 @@ export const meController = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await UserModel.findById(decoded.id).select(
-      "_id name email role",
+      "_id fullName email role profile_image",
     );
 
     if (!user) {

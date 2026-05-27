@@ -47,7 +47,14 @@ const UserSchema = new mongoose.Schema(
     lastLogin: {
       type: Date,
     },
-
+    profile_image: {
+      type: String,
+      default: "",
+    },
+    profile_image_public_id: {
+      type: String,
+      default: "",
+    },
     isActive: {
       type: Boolean,
       default: true,

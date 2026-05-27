@@ -12,7 +12,6 @@ import {
   MapPin,
   ArrowRight,
 } from "lucide-react";
-import api from "@/utils/api";
 import DotCircleLoader from "@/loader/DotCircleLoader";
 
 export default function PremiumHolidays() {
@@ -20,69 +19,97 @@ export default function PremiumHolidays() {
   const [holidays, setHolidays] = useState<any>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    const fetchHolidays = async () => {
-      try {
-        setLoading(true);
-        // Mocking data for visual demo - replace with your actual API call
-        setTimeout(() => {
-          setHolidays([
-            {
-              name: "New Year's Day",
-              date: "2026-01-01",
-              fullDate: "01 Jan, 2026",
-              day: "Thursday",
-              type: "Public",
-              daysLeft: 0,
-            },
-            {
-              name: "Holi Festival",
-              date: "2026-03-04",
-              fullDate: "04 Mar, 2026",
-              day: "Wednesday",
-              type: "Festival",
-              daysLeft: 0,
-            },
-            {
-              name: "Independence Day",
-              date: "2026-08-15",
-              fullDate: "15 Aug, 2026",
-              day: "Saturday",
-              type: "National",
-              daysLeft: 100,
-            },
-            {
-              name: "Diwali",
-              date: "2026-11-08",
-              fullDate: "08 Nov, 2026",
-              day: "Sunday",
-              type: "Festival",
-              daysLeft: 185,
-            },
-            {
-              name: "Christmas",
-              date: "2026-12-25",
-              fullDate: "25 Dec, 2026",
-              day: "Friday",
-              type: "Public",
-              daysLeft: 232,
-            },
-          ]);
-          setLoading(false);
-        }, 1000);
-      } catch (err) {
-        console.error(err);
-        setLoading(false);
-      }
-    };
-    fetchHolidays();
-  }, []);
+  // useEffect(() => {
+  //   const fetchHolidays = async () => {
+  //     try {
+  //       setLoading(true);
+  //       // Mocking data for visual demo - replace with your actual API call
+  //       setTimeout(() => {
+          // setHolidays([
+          //   {
+          //     name: "New Year's Day",
+          //     date: "2026-01-01",
+          //     fullDate: "01 Jan, 2026",
+          //     day: "Thursday",
+          //     type: "Public",
+          //     daysLeft: 0,
+          //   },
+          //   {
+          //     name: "Holi Festival",
+          //     date: "2026-03-04",
+          //     fullDate: "04 Mar, 2026",
+          //     day: "Wednesday",
+          //     type: "Festival",
+          //     daysLeft: 0,
+          //   },
+          //   {
+          //     name: "Independence Day",
+          //     date: "2026-08-15",
+          //     fullDate: "15 Aug, 2026",
+          //     day: "Saturday",
+          //     type: "National",
+          //     daysLeft: 100,
+          //   },
+          //   {
+          //     name: "Diwali",
+          //     date: "2026-11-08",
+          //     fullDate: "08 Nov, 2026",
+          //     day: "Sunday",
+          //     type: "Festival",
+          //     daysLeft: 185,
+          //   },
+          //   {
+          //     name: "Christmas",
+          //     date: "2026-12-25",
+          //     fullDate: "25 Dec, 2026",
+          //     day: "Friday",
+          //     type: "Public",
+          //     daysLeft: 232,
+          //   },
+          // ]);
+  //         setLoading(false);
+  //       }, 1000);
+  //     } catch (err) {
+  //       console.error(err);
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchHolidays();
+  // }, []);
 
-  const filteredHolidays = holidays.filter((h) =>
-    h.name.toLowerCase().includes(searchTerm.toLowerCase()),
+
+useEffect(() => {
+  const getAllHolidays = async () => {
+    try {
+      setLoading(true);
+
+      const res = await fetch("http://localhost:7002/api/holidays");
+
+      const data = await res.json();
+
+      console.log(data);
+
+      setHolidays(data?.holiday || []);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  getAllHolidays();
+}, []);
+  const filteredHolidays = holidays.filter((h: any) =>
+    // h.name.toLowerCase().includes(searchTerm.toLowerCase()),
+
+    h?.holiday_name?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
-  const nextHoliday =
-    holidays.find((h) => new Date(h.date) >= new Date()) || holidays[0];
+  // const nextHoliday =
+  //   holidays.find((h:any) => new Date(h.date) >= new Date()) || holidays[0];
+    const nextHoliday =
+      holidays.find((h: any) => new Date(h?.holiday_date) >= new Date()) ||
+      holidays[0];
+console.log("filteredHolidays===>", filteredHolidays);
 
   if (loading) {
     return (
@@ -275,7 +302,7 @@ export default function PremiumHolidays() {
                   fontFamily: "'DM Serif Display', serif",
                 }}
               >
-                {nextHoliday?.name}
+                {nextHoliday?.holiday_name}
               </h2>
               <p
                 style={{
@@ -286,7 +313,7 @@ export default function PremiumHolidays() {
                   marginBottom: 32,
                 }}
               >
-                <Calendar size={16} /> {nextHoliday?.fullDate} •{" "}
+                <Calendar size={16} /> {nextHoliday?.holiday_date}
                 {nextHoliday?.day}
               </p>
 
@@ -310,7 +337,7 @@ export default function PremiumHolidays() {
                   Time to Celebration
                 </div>
                 <div style={{ fontSize: 28, fontWeight: 800 }}>
-                  {nextHoliday?.daysLeft}{" "}
+                  {nextHoliday?.daysleft}
                   <span
                     style={{ fontSize: 16, fontWeight: 400, color: "#64748b" }}
                   >
@@ -381,8 +408,8 @@ export default function PremiumHolidays() {
                 paddingRight: "10px",
               }}
             >
-              {filteredHolidays.map((h, i) => {
-                const isPast = new Date(h.date) < new Date();
+              {filteredHolidays.map((h:any, i:any) => {
+                const isPast = new Date(h.holiday_date) < new Date();
                 return (
                   <div
                     key={i}
@@ -412,7 +439,7 @@ export default function PremiumHolidays() {
                           height: "56px",
                           borderRadius: "18px",
                           background:
-                            h.type === "National"
+                            h.holiday_type === "National"
                               ? "linear-gradient(135deg, #3b82f610, #3b82f630)"
                               : "linear-gradient(135deg, #a855f710, #a855f730)",
                           display: "flex",
@@ -421,7 +448,7 @@ export default function PremiumHolidays() {
                           border: "1px solid rgba(255,255,255,0.05)",
                         }}
                       >
-                        {h.type === "National" ? (
+                        {h?.holiday_type === "National" ? (
                           <Sun size={24} color="#3b82f6" />
                         ) : (
                           <Snowflake size={24} color="#a855f7" />
@@ -436,7 +463,7 @@ export default function PremiumHolidays() {
                             marginBottom: 4,
                           }}
                         >
-                          {h.name}
+                          {h?.holiday_name}
                         </h4>
                         <div
                           style={{
@@ -454,7 +481,7 @@ export default function PremiumHolidays() {
                               gap: 4,
                             }}
                           >
-                            <Calendar size={14} /> {h.fullDate}
+                            <Calendar size={14} /> {h.holiday_date}
                           </span>
                           <span
                             style={{
@@ -478,13 +505,13 @@ export default function PremiumHolidays() {
                           padding: "6px 12px",
                           borderRadius: "8px",
                           background:
-                            h.type === "National" ? "#3b82f620" : "#a855f720",
-                          color: h.type === "National" ? "#60a5fa" : "#c084fc",
+                            h.holiday_type === "National" ? "#3b82f620" : "#a855f720",
+                          color: h.holiday_type === "National" ? "#60a5fa" : "#c084fc",
                           display: "inline-block",
                           marginBottom: 8,
                         }}
                       >
-                        {h.type.toUpperCase()}
+                        {h.holiday_type.toUpperCase()}
                       </div>
                       {isPast ? (
                         <div

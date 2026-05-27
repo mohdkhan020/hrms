@@ -1,7 +1,6 @@
-
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Bell,
   Calendar,
@@ -21,6 +20,7 @@ import {
   DollarSign,
 } from "lucide-react";
 import api from "@/utils/api";
+import { useAuth } from "@/context/AuthContext";
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
 // const employee = {
@@ -33,17 +33,61 @@ import api from "@/utils/api";
 // };
 
 const stats = [
-  { label: "Present Days", value: "22", total: "26", icon: CheckCircle, color: "#22c55e" },
-  { label: "Leaves Left", value: "8", total: "12", icon: Calendar, color: "#f59e0b" },
-  { label: "Tasks Done", value: "34", total: "40", icon: Briefcase, color: "#3b82f6" },
-  { label: "Overtime Hrs", value: "6", total: "", icon: Clock, color: "#a855f7" },
+  {
+    label: "Present Days",
+    value: "22",
+    total: "26",
+    icon: CheckCircle,
+    color: "#22c55e",
+  },
+  {
+    label: "Leaves Left",
+    value: "8",
+    total: "12",
+    icon: Calendar,
+    color: "#f59e0b",
+  },
+  {
+    label: "Tasks Done",
+    value: "34",
+    total: "40",
+    icon: Briefcase,
+    color: "#3b82f6",
+  },
+  {
+    label: "Overtime Hrs",
+    value: "6",
+    total: "",
+    icon: Clock,
+    color: "#a855f7",
+  },
 ];
 
 const recentActivity = [
-  { type: "leave", msg: "Leave approved — May 3 to May 5", time: "2 days ago", status: "approved" },
-  { type: "payslip", msg: "April 2025 payslip generated", time: "5 days ago", status: "info" },
-  { type: "task", msg: "Task 'Dashboard redesign' marked complete", time: "1 week ago", status: "done" },
-  { type: "alert", msg: "Attendance marked late on Apr 28", time: "1 week ago", status: "warning" },
+  {
+    type: "leave",
+    msg: "Leave approved — May 3 to May 5",
+    time: "2 days ago",
+    status: "approved",
+  },
+  {
+    type: "payslip",
+    msg: "April 2025 payslip generated",
+    time: "5 days ago",
+    status: "info",
+  },
+  {
+    type: "task",
+    msg: "Task 'Dashboard redesign' marked complete",
+    time: "1 week ago",
+    status: "done",
+  },
+  {
+    type: "alert",
+    msg: "Attendance marked late on Apr 28",
+    time: "1 week ago",
+    status: "warning",
+  },
 ];
 
 const upcomingLeaves = [
@@ -58,51 +102,121 @@ const tasks = [
   { label: "Attend onboarding session", due: "May 8", done: true },
 ];
 
-
-function StatCard({ stat }: { stat: typeof stats[0] }) {
+function StatCard({ stat }: { stat: (typeof stats)[0] }) {
   const pct = stat.total ? Math.round((+stat.value / +stat.total) * 100) : null;
   return (
-    <div style={{
-      background: "#0f1117",
-      border: "1px solid #1e2130",
-      borderRadius: 16,
-      padding: "20px 22px",
-      display: "flex",
-      flexDirection: "column",
-      gap: 14,
-      position: "relative",
-      overflow: "hidden",
-    }}>
+    <div
+      style={{
+        background: "#0f1117",
+        border: "1px solid #1e2130",
+        borderRadius: 16,
+        padding: "20px 22px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 14,
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
       {/* glow */}
-      <div style={{
-        position: "absolute", top: -20, right: -20, width: 80, height: 80,
-        borderRadius: "50%", background: stat.color + "22", filter: "blur(20px)",
-      }} />
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+      <div
+        style={{
+          position: "absolute",
+          top: -20,
+          right: -20,
+          width: 80,
+          height: 80,
+          borderRadius: "50%",
+          background: stat.color + "22",
+          filter: "blur(20px)",
+        }}
+      />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+        }}
+      >
         <div>
-          <p style={{ color: "#6b7280", fontSize: 13, fontFamily: "'DM Sans',sans-serif", margin: 0 }}>{stat.label}</p>
-          <h3 style={{
-            color: "#f1f5f9", fontSize: 32, fontWeight: 800,
-            fontFamily: "'DM Serif Display',serif", margin: "4px 0 0",
-          }}>
+          <p
+            style={{
+              color: "#6b7280",
+              fontSize: 13,
+              fontFamily: "'DM Sans',sans-serif",
+              margin: 0,
+            }}
+          >
+            {stat.label}
+          </p>
+          <h3
+            style={{
+              color: "#f1f5f9",
+              fontSize: 32,
+              fontWeight: 800,
+              fontFamily: "'DM Serif Display',serif",
+              margin: "4px 0 0",
+            }}
+          >
             {stat.value}
-            {stat.total && <span style={{ fontSize: 16, color: "#6b7280", fontFamily: "'DM Sans',sans-serif", fontWeight: 400 }}>/{stat.total}</span>}
+            {stat.total && (
+              <span
+                style={{
+                  fontSize: 16,
+                  color: "#6b7280",
+                  fontFamily: "'DM Sans',sans-serif",
+                  fontWeight: 400,
+                }}
+              >
+                /{stat.total}
+              </span>
+            )}
           </h3>
         </div>
-        <div style={{
-          width: 42, height: 42, borderRadius: 12,
-          background: stat.color + "22",
-          display: "flex", alignItems: "center", justifyContent: "center",
-        }}>
+        <div
+          style={{
+            width: 42,
+            height: 42,
+            borderRadius: 12,
+            background: stat.color + "22",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <stat.icon size={20} color={stat.color} />
         </div>
       </div>
       {pct !== null && (
         <div>
-          <div style={{ height: 6, background: "#1e2130", borderRadius: 99, overflow: "hidden" }}>
-            <div style={{ height: "100%", width: `${pct}%`, background: stat.color, borderRadius: 99, transition: "width 1s ease" }} />
+          <div
+            style={{
+              height: 6,
+              background: "#1e2130",
+              borderRadius: 99,
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                height: "100%",
+                width: `${pct}%`,
+                background: stat.color,
+                borderRadius: 99,
+                transition: "width 1s ease",
+              }}
+            />
           </div>
-          <p style={{ color: "#6b7280", fontSize: 12, margin: "6px 0 0", fontFamily: "'DM Sans',sans-serif" }}>{pct}% of month</p>
+          <p
+            style={{
+              color: "#6b7280",
+              fontSize: 12,
+              margin: "6px 0 0",
+              fontFamily: "'DM Sans',sans-serif",
+            }}
+          >
+            {pct}% of month
+          </p>
         </div>
       )}
     </div>
@@ -120,39 +234,49 @@ export default function EmployeeDashboard() {
     joinDate: "March 2022",
     profileImage: "",
   });
- const [profileImage, setProfileImage] = useState("");
- const [uploading, setUploading] = useState(false);
 
- const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-   try {
-     const file = e.target.files?.[0];
+  const { user } = useAuth(); // AuthContext se
+  const [profileImage, setProfileImage] = useState("");
+  const [uploading, setUploading] = useState(false);
 
-     if (!file) return;
+useEffect(() => {
+  if (user?.profile_image) {
+    setProfileImage(user.profile_image);
+  }
+}, [user]);
 
-     // ✅ instant preview
-     const previewUrl = URL.createObjectURL(file);
-     setProfileImage(previewUrl);
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      const file = e.target.files?.[0];
 
-     const formData = new FormData();
-     formData.append("image", file);
+      if (!file) return;
 
-     setUploading(true);
+      // ✅ instant preview
+      const previewUrl = URL.createObjectURL(file);
+      setProfileImage(previewUrl);
 
-     // ✅ upload image
-     const res = await api.post("/employee/upload-profile", formData, {
-       headers: {
-         "Content-Type": "multipart/form-data",
-       },
-     });
+      const formData = new FormData();
+      formData.append("image", file);
+      setUploading(true);
+      const res = await fetch(
+        `http://localhost:7001/api/upload/${user?._id}`,
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+      const data = await res.json();
 
-     // ✅ final backend image url
-     setProfileImage(res.data.imageUrl);
-   } catch (error) {
-     console.log(error);
-   } finally {
-     setUploading(false);
-   }
- };
+      console.log("data===>", data);
+
+      // ✅ final backend image url
+      setProfileImage(data?.user?.profile_image);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   return (
     <>
