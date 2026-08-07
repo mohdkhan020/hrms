@@ -1,12 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect,useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function Home() {
   const mainRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const morphShapeRef = useRef<HTMLDivElement>(null);
+  const morphTitleRef = useRef<HTMLDivElement>(null);
+  const cardsTrackRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
   const [selectedPlan, setSelectedPlan] = useState("Growth");
@@ -83,251 +87,351 @@ export default function Home() {
     });
   };
 
-  useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+useLayoutEffect(() => {
+  gsap.registerPlugin(ScrollTrigger);
 
-    const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        start: 50,
-        end: 99999,
-        toggleClass: { targets: ".navbar-glass", className: "scrolled" },
+  const ctx = gsap.context(() => {
+    // ============ NAVBAR SCROLL CLASS ============
+    ScrollTrigger.create({
+      start: 50,
+      end: 99999,
+      toggleClass: { targets: ".navbar-glass", className: "scrolled" },
+    });
+
+    // ============ SCROLL PROGRESS BAR ============
+    gsap.to(".scroll-progress", {
+      scaleX: 1,
+      ease: "none",
+      scrollTrigger: {
+        trigger: document.body,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 0.3,
+      },
+    });
+
+    // ============ HERO ENTRANCE ============
+    const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    heroTl
+      .from(".hero-badge", { y: 30, opacity: 0, duration: 0.7 })
+      .from(
+        ".hero-title-word",
+        { y: 60, opacity: 0, duration: 0.8, stagger: 0.06 },
+        "-=0.4",
+      )
+      .from(".hero-sub", { y: 30, opacity: 0, duration: 0.7 }, "-=0.4")
+      .from(
+        ".hero-cta-group > *",
+        { y: 20, opacity: 0, duration: 0.6, stagger: 0.15 },
+        "-=0.4",
+      )
+      .from(
+        ".hero-mockup",
+        { x: 80, opacity: 0, duration: 1, ease: "power4.out" },
+        "-=0.8",
+      )
+      .from(
+        ".hero-mini-card",
+        { scale: 0.7, opacity: 0, duration: 0.6, ease: "back.out(1.7)" },
+        "-=0.3",
+      );
+
+    // ============ MOUSE PARALLAX BLOBS ============
+    const hero = document.querySelector(".hero-section");
+    const blobs = gsap.utils.toArray<HTMLElement>(".blob");
+    const handleMouseMove = (e: MouseEvent) => {
+      const { innerWidth, innerHeight } = window;
+      const x = (e.clientX / innerWidth - 0.5) * 40;
+      const y = (e.clientY / innerHeight - 0.5) * 40;
+      blobs.forEach((blob, i) => {
+        gsap.to(blob, {
+          x: x * (i + 1) * 0.5,
+          y: y * (i + 1) * 0.5,
+          duration: 1.2,
+          ease: "power2.out",
+        });
       });
+    };
+    hero?.addEventListener("mousemove", handleMouseMove as EventListener);
 
-      // scroll progress bar
-      gsap.to(".scroll-progress", {
-        scaleX: 1,
+    gsap.to(".blob-1", {
+      yPercent: 60,
+      scrollTrigger: {
+        trigger: ".hero-section",
+        start: "top top",
+        end: "bottom top",
+        scrub: 1,
+      },
+    });
+    gsap.to(".blob-2", {
+      yPercent: -50,
+      scrollTrigger: {
+        trigger: ".hero-section",
+        start: "top top",
+        end: "bottom top",
+        scrub: 1,
+      },
+    });
+
+    // ============ SCROLL-VELOCITY SKEW ============
+    let proxy = { skew: 0 };
+    let skewSetter = gsap.quickSetter(".skew-target", "skewY", "deg");
+    let clamp = gsap.utils.clamp(-6, 6);
+    ScrollTrigger.create({
+      onUpdate: (self) => {
+        let skew = clamp(self.getVelocity() / -300);
+        if (Math.abs(skew) > Math.abs(proxy.skew)) {
+          proxy.skew = skew;
+          gsap.to(proxy, {
+            skew: 0,
+            duration: 0.8,
+            ease: "power3",
+            overwrite: true,
+            onUpdate: () => skewSetter(proxy.skew),
+          });
+        }
+      },
+    });
+
+    // ============ LOGO MARQUEE ============
+    gsap.to(".marquee-track", {
+      xPercent: -50,
+      repeat: -1,
+      duration: 18,
+      ease: "linear",
+    });
+
+    // ============ GENERIC REVEAL ============
+    gsap.utils.toArray<HTMLElement>(".reveal").forEach((el) => {
+      gsap.from(el, {
+        y: 60,
+        opacity: 0,
+        duration: 0.9,
+        ease: "power3.out",
+        scrollTrigger: { trigger: el, start: "top 85%" },
+      });
+    });
+
+    gsap.utils.toArray<HTMLElement>(".stagger-group").forEach((group) => {
+      gsap.from(group.children, {
+        y: 50,
+        opacity: 0,
+        duration: 0.7,
+        stagger: 0.15,
+        ease: "power3.out",
+        scrollTrigger: { trigger: group, start: "top 85%" },
+      });
+    });
+
+    // ============ FEATURE ICON ROTATE-IN ============
+    gsap.utils.toArray<HTMLElement>(".feature-icon").forEach((icon) => {
+      gsap.from(icon, {
+        rotate: -180,
+        scale: 0,
+        opacity: 0,
+        duration: 0.8,
+        ease: "back.out(1.8)",
+        scrollTrigger: { trigger: icon, start: "top 88%" },
+      });
+    });
+
+    // ============ ANIMATED COUNTERS ============
+    gsap.utils.toArray<HTMLElement>(".counter").forEach((el) => {
+      const target = parseFloat(el.dataset.target || "0");
+      const obj = { val: 0 };
+      ScrollTrigger.create({
+        trigger: el,
+        start: "top 90%",
+        once: true,
+        onEnter: () => {
+          gsap.to(obj, {
+            val: target,
+            duration: 1.8,
+            ease: "power2.out",
+            onUpdate: () =>
+              (el.textContent =
+                Math.floor(obj.val).toString() + (el.dataset.suffix || "")),
+          });
+        },
+      });
+    });
+
+    // ============ PRODUCT SHOWCASE ============
+    gsap.from(".showcase-mockup", {
+      scale: 0.85,
+      opacity: 0,
+      duration: 1,
+      ease: "power3.out",
+      scrollTrigger: { trigger: ".showcase-section", start: "top 70%" },
+    });
+    gsap.utils.toArray<HTMLElement>(".showcase-point").forEach((pt, i) => {
+      gsap.from(pt, {
+        x: -60,
+        opacity: 0,
+        duration: 0.7,
+        delay: i * 0.15,
+        ease: "power3.out",
+        scrollTrigger: { trigger: pt, start: "top 85%" },
+      });
+    });
+
+    // ============ HORIZONTAL TESTIMONIALS PIN ============
+    const testimonialTrack = document.querySelector(
+      ".testimonial-track",
+    ) as HTMLElement;
+    if (testimonialTrack) {
+      const scrollAmount =
+        testimonialTrack.scrollWidth - window.innerWidth + 100;
+      gsap.to(testimonialTrack, {
+        x: -scrollAmount,
         ease: "none",
         scrollTrigger: {
-          trigger: document.body,
+          trigger: ".testimonial-pin-section",
           start: "top top",
-          end: "bottom bottom",
-          scrub: 0.3,
-        },
-      });
-
-      // Hero entrance
-      const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      heroTl
-        .from(".hero-badge", { y: 30, opacity: 0, duration: 0.7 })
-        .from(
-          ".hero-title-word",
-          { y: 60, opacity: 0, duration: 0.8, stagger: 0.06 },
-          "-=0.4",
-        )
-        .from(".hero-sub", { y: 30, opacity: 0, duration: 0.7 }, "-=0.4")
-        .from(
-          ".hero-cta-group > *",
-          { y: 20, opacity: 0, duration: 0.6, stagger: 0.15 },
-          "-=0.4",
-        )
-        .from(
-          ".hero-mockup",
-          { x: 80, opacity: 0, duration: 1, ease: "power4.out" },
-          "-=0.8",
-        )
-        .from(
-          ".hero-mini-card",
-          { scale: 0.7, opacity: 0, duration: 0.6, ease: "back.out(1.7)" },
-          "-=0.3",
-        );
-
-      // mouse parallax blobs
-      const hero = document.querySelector(".hero-section");
-      const blobs = gsap.utils.toArray<HTMLElement>(".blob");
-      const handleMouseMove = (e: MouseEvent) => {
-        const { innerWidth, innerHeight } = window;
-        const x = (e.clientX / innerWidth - 0.5) * 40;
-        const y = (e.clientY / innerHeight - 0.5) * 40;
-        blobs.forEach((blob, i) => {
-          gsap.to(blob, {
-            x: x * (i + 1) * 0.5,
-            y: y * (i + 1) * 0.5,
-            duration: 1.2,
-            ease: "power2.out",
-          });
-        });
-      };
-      hero?.addEventListener("mousemove", handleMouseMove as EventListener);
-
-      gsap.to(".blob-1", {
-        yPercent: 60,
-        scrollTrigger: {
-          trigger: ".hero-section",
-          start: "top top",
-          end: "bottom top",
+          end: () => `+=${scrollAmount + 400}`,
           scrub: 1,
+          pin: true,
+          pinType: "transform", // 🔧 FIX: viewport-fixed ki jagah element-relative pin
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
         },
       });
-      gsap.to(".blob-2", {
-        yPercent: -50,
-        scrollTrigger: {
-          trigger: ".hero-section",
-          start: "top top",
-          end: "bottom top",
-          scrub: 1,
-        },
-      });
+    }
 
-      // scroll-velocity skew (dynamic tilt while scrolling fast)
-      let proxy = { skew: 0 };
-      let skewSetter = gsap.quickSetter(".skew-target", "skewY", "deg");
-      let clamp = gsap.utils.clamp(-6, 6);
-      ScrollTrigger.create({
-        onUpdate: (self) => {
-          let skew = clamp(self.getVelocity() / -300);
-          if (Math.abs(skew) > Math.abs(proxy.skew)) {
-            proxy.skew = skew;
-            gsap.to(proxy, {
-              skew: 0,
-              duration: 0.8,
-              ease: "power3",
-              overwrite: true,
-              onUpdate: () => skewSetter(proxy.skew),
-            });
-          }
-        },
-      });
+    // ============ PRICING CARDS ============
+    gsap.from(".pricing-card", {
+      y: 70,
+      opacity: 0,
+      scale: 0.95,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: "back.out(1.4)",
+      scrollTrigger: { trigger: ".pricing-section", start: "top 75%" },
+    });
 
-      // marquee
-      gsap.to(".marquee-track", {
-        xPercent: -50,
-        repeat: -1,
-        duration: 18,
-        ease: "linear",
-      });
-
-      // generic reveal
-      gsap.utils.toArray<HTMLElement>(".reveal").forEach((el) => {
-        gsap.from(el, {
-          y: 60,
-          opacity: 0,
-          duration: 0.9,
-          ease: "power3.out",
-          scrollTrigger: { trigger: el, start: "top 85%" },
-        });
-      });
-
-      gsap.utils.toArray<HTMLElement>(".stagger-group").forEach((group) => {
-        gsap.from(group.children, {
-          y: 50,
-          opacity: 0,
-          duration: 0.7,
-          stagger: 0.15,
-          ease: "power3.out",
-          scrollTrigger: { trigger: group, start: "top 85%" },
-        });
-      });
-
-      // icon rotate-in on scroll
-      gsap.utils.toArray<HTMLElement>(".feature-icon").forEach((icon) => {
-        gsap.from(icon, {
-          rotate: -180,
-          scale: 0,
-          opacity: 0,
-          duration: 0.8,
-          ease: "back.out(1.8)",
-          scrollTrigger: { trigger: icon, start: "top 88%" },
-        });
-      });
-
-      // counters
-      gsap.utils.toArray<HTMLElement>(".counter").forEach((el) => {
-        const target = parseFloat(el.dataset.target || "0");
-        const obj = { val: 0 };
-        ScrollTrigger.create({
-          trigger: el,
-          start: "top 90%",
-          once: true,
-          onEnter: () => {
-            gsap.to(obj, {
-              val: target,
-              duration: 1.8,
-              ease: "power2.out",
-              onUpdate: () =>
-                (el.textContent =
-                  Math.floor(obj.val).toString() + (el.dataset.suffix || "")),
-            });
-          },
-        });
-      });
-
-      // showcase
-      gsap.from(".showcase-mockup", {
-        scale: 0.85,
+    // ============ FAQ ITEMS ============
+    gsap.utils.toArray<HTMLElement>(".faq-item").forEach((el, i) => {
+      gsap.from(el, {
+        y: 30,
         opacity: 0,
-        duration: 1,
+        duration: 0.6,
+        delay: i * 0.08,
         ease: "power3.out",
-        scrollTrigger: { trigger: ".showcase-section", start: "top 70%" },
+        scrollTrigger: { trigger: el, start: "top 90%" },
       });
-      gsap.utils.toArray<HTMLElement>(".showcase-point").forEach((pt, i) => {
-        gsap.from(pt, {
-          x: -60,
-          opacity: 0,
-          duration: 0.7,
-          delay: i * 0.15,
-          ease: "power3.out",
-          scrollTrigger: { trigger: pt, start: "top 85%" },
-        });
+    });
+
+    // ============ CTA CONTENT ============
+    gsap.from(".cta-content > *", {
+      y: 40,
+      opacity: 0,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: "power3.out",
+      scrollTrigger: { trigger: ".cta-section", start: "top 80%" },
+    });
+
+    // ============ PHONEPE-STYLE MORPH SECTION ============
+    const section = sectionRef.current;
+    const morph = morphShapeRef.current;
+    const title = morphTitleRef.current;
+    const track = cardsTrackRef.current;
+
+    let marqueeTween: gsap.core.Tween | null = null;
+
+    if (section && morph && title && track) {
+      const getFinalWidth = () => Math.min(section.clientWidth * 0.92, 1100);
+      const getFinalHeight = () => (window.innerWidth < 768 ? 380 : 520);
+      const getHalfShift = () => track.scrollWidth / 2;
+
+      gsap.set(morph, { width: 140, height: 140, borderRadius: "50%" });
+      gsap.set(title, { opacity: 0, y: 30 });
+      gsap.set(track, { opacity: 0, y: 40, x: 0 });
+
+      const morphTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: () => "+=" + window.innerHeight * 3,
+          scrub: 1,
+          pin: true,
+          pinType: "transform", // 🔧 FIX: yehi asli fix hai overlap ke liye
+          pinSpacing: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onLeave: () => startMarquee(),
+          onEnterBack: () => stopMarquee(),
+          onLeaveBack: () => stopMarquee(),
+        },
       });
 
-      // horizontal testimonials pin
-      const track = document.querySelector(".testimonial-track") as HTMLElement;
-      if (track) {
-        const scrollAmount = track.scrollWidth - window.innerWidth + 100;
-        gsap.to(track, {
-          x: -scrollAmount,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".testimonial-pin-section",
-            start: "top top",
-            end: () => `+=${scrollAmount + 400}`,
-            scrub: 1,
-            pin: true,
-            anticipatePin: 1,
+      morphTl
+        .to(morph, {
+          width: () => getFinalWidth(),
+          height: () => getFinalHeight(),
+          borderRadius: 32,
+          duration: 1,
+          ease: "power2.inOut",
+        })
+        .to(title, { opacity: 1, y: 0, duration: 0.5 }, "-=0.15")
+        .to(track, { opacity: 1, y: 0, duration: 0.5 }, "<")
+        .to(track, { x: () => -getHalfShift(), duration: 2, ease: "none" });
+
+      function startMarquee() {
+        if (marqueeTween || !track) return;
+        const half = getHalfShift();
+        gsap.set(track, { x: -half });
+        marqueeTween = gsap.to(track, {
+          x: -half * 2,
+          duration: 16,
+          ease: "linear",
+          repeat: -1,
+          modifiers: {
+            x: (x) => {
+              const val = parseFloat(x);
+              return gsap.utils.wrap(-half * 2, -half, val) + "px";
+            },
           },
         });
       }
 
-      gsap.from(".pricing-card", {
-        y: 70,
-        opacity: 0,
-        scale: 0.95,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: "back.out(1.4)",
-        scrollTrigger: { trigger: ".pricing-section", start: "top 75%" },
-      });
+      function stopMarquee() {
+        if (marqueeTween) {
+          marqueeTween.kill();
+          marqueeTween = null;
+        }
+      }
+    }
 
-      gsap.utils.toArray<HTMLElement>(".faq-item").forEach((el, i) => {
-        gsap.from(el, {
-          y: 30,
-          opacity: 0,
-          duration: 0.6,
-          delay: i * 0.08,
-          ease: "power3.out",
-          scrollTrigger: { trigger: el, start: "top 90%" },
-        });
-      });
+    // ============ RESIZE + LOAD REFRESH HANDLER ============
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => ScrollTrigger.refresh(), 200);
+    };
+    window.addEventListener("resize", handleResize);
 
-      gsap.from(".cta-content > *", {
-        y: 40,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: "power3.out",
-        scrollTrigger: { trigger: ".cta-section", start: "top 80%" },
-      });
+    // 🔧 FIX: images/fonts load hone ke baad measurements dobara refresh karo
+    const handleWindowLoad = () => ScrollTrigger.refresh();
+    window.addEventListener("load", handleWindowLoad);
 
-      return () => {
-        hero?.removeEventListener(
-          "mousemove",
-          handleMouseMove as EventListener,
-        );
-      };
-    }, mainRef);
+    // 🔧 FIX: multiple delayed refreshes taaki async-loaded content bhi account ho
+    const refreshTimer1 = setTimeout(() => ScrollTrigger.refresh(), 300);
+    const refreshTimer2 = setTimeout(() => ScrollTrigger.refresh(), 1000);
 
-    return () => ctx.revert();
-  }, []);
+    return () => {
+      hero?.removeEventListener("mousemove", handleMouseMove as EventListener);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("load", handleWindowLoad);
+      clearTimeout(refreshTimer1);
+      clearTimeout(refreshTimer2);
+      clearTimeout(resizeTimer);
+      if (marqueeTween) marqueeTween.kill();
+    };
+  }, mainRef);
+
+  return () => ctx.revert();
+}, []);
 
   const features = [
     {
@@ -362,28 +466,38 @@ export default function Home() {
     },
   ];
 
-  const steps = [
-    {
-      n: "01",
-      title: "Sign Up",
-      desc: "Create your workspace in under 2 minutes.",
-    },
-    {
-      n: "02",
-      title: "Add Your Team",
-      desc: "Bulk import employees via CSV or API.",
-    },
-    {
-      n: "03",
-      title: "Automate",
-      desc: "Let AI handle payroll, leaves & attendance.",
-    },
-    {
-      n: "04",
-      title: "Grow",
-      desc: "Track performance and scale effortlessly.",
-    },
-  ];
+ const steps = [
+   {
+     n: "01",
+     title: "Sign Up",
+     desc: "Create your workspace in under 2 minutes.",
+   },
+   {
+     n: "02",
+     title: "Add Your Team",
+     desc: "Bulk import employees via CSV or API.",
+   },
+   {
+     n: "03",
+     title: "Integrate Tools",
+     desc: "Connect Slack, email & existing HR systems.",
+   },
+   {
+     n: "04",
+     title: "Automate",
+     desc: "Let AI handle payroll, leaves & attendance.",
+   },
+   {
+     n: "05",
+     title: "Analyze",
+     desc: "Get AI-powered insights & performance reports.",
+   },
+   {
+     n: "06",
+     title: "Grow",
+     desc: "Track performance and scale effortlessly.",
+   },
+ ];
 
   const testimonials = [
     {
@@ -693,6 +807,7 @@ export default function Home() {
 
       {/* 2. STATS */}
       <section className="container">
+        {/* <div className="stats-strip row text-center g-4"> */}
         <div className="stats-strip row text-center g-3 g-md-4">
           <div className="col-6 col-md-3">
             <div
@@ -766,6 +881,7 @@ export default function Home() {
         </div>
         <div className="row g-4 stagger-group">
           {features.map((item, i) => (
+            // <div key={i} className="col-md-4">
             <div
               key={i}
               className="col-md-4 stack-card-mobile"
@@ -786,40 +902,44 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. HOW IT WORKS */}
-      <section id="howitworks" className="how-section py-5">
-        <div className="container">
-          <div className="text-center mb-5 reveal">
-            <span className="section-tag" style={{ color: "#ffd200" }}>
-              PROCESS
-            </span>
-            <h2 className="fw-bold mt-2 text-white">
-              Get Started in 4 Simple Steps
-            </h2>
-          </div>
-          <div className="row g-4 stagger-group">
-            {steps.map((s, i) => (
-              <div
-                key={i}
-                className="col-md-3 stack-card-mobile"
-                style={{ zIndex: i + 1 }}
-              >
-                <div className="step-card">
-                  <div className="step-number">{s.n}</div>
-                  <h5 className="fw-bold mt-3 text-white">{s.title}</h5>
-                  <p
-                    style={{ color: "rgba(255,255,255,0.75)" }}
-                    className="mb-0"
-                  >
-                    {s.desc}
-                  </p>
-                </div>
+      {/* 5. HOW IT WORKS - PHONEPE STYLE CIRCLE-TO-SQUARE MORPH */}
+      <section
+        id="howitworks"
+        ref={sectionRef}
+        className="phonepe-section position-relative overflow-hidden"
+      >
+        <div className="phonepe-rings">
+          <span className="ring ring-1" />
+          <span className="ring ring-2" />
+          <span className="ring ring-3" />
+          <span className="ring ring-4" />
+        </div>
+
+        <div className="phonepe-pin-inner">
+          <div ref={morphShapeRef} className="morph-shape">
+            <div ref={morphTitleRef} className="morph-title">
+              <span className="section-tag" style={{ color: "#ffd200" }}>
+                PROCESS
+              </span>
+              <h2 className="fw-bold text-white mt-2">
+                Get Started in 6 Simple Steps
+              </h2>
+            </div>
+
+            <div className="cards-viewport">
+              <div ref={cardsTrackRef} className="cards-track">
+                {[...steps, ...steps].map((s, i) => (
+                  <div key={i} className="phonepe-card">
+                    <div className="phonepe-card-number">{s.n}</div>
+                    <h6 className="fw-bold text-white mb-1 mt-2">{s.title}</h6>
+                    <p className="phonepe-card-desc mb-0">{s.desc}</p>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>
-
       {/* 6. PRODUCT SHOWCASE */}
       <section className="showcase-section container py-5 my-4">
         <div className="row align-items-center g-5">
@@ -1177,6 +1297,17 @@ export default function Home() {
           }
         }
 
+        // .navbar-glass {
+        //   background: transparent;
+        //   transition: all 0.35s ease;
+        //   z-index: 100;
+        // }
+        // .navbar-glass.scrolled {
+        //   background: rgba(74, 26, 122, 0.9);
+        //   backdrop-filter: blur(12px);
+        //   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        // }
+
         .navbar-glass {
           background: rgba(74, 26, 122, 0.35);
           backdrop-filter: blur(14px);
@@ -1205,6 +1336,7 @@ export default function Home() {
           justify-content: center;
           font-weight: 800;
           color: #4a1a7a;
+          // font-size: 1.1rem;
           font-size: 0.8rem;
           box-shadow: 0 4px 15px rgba(255, 210, 0, 0.35);
           transition: transform 0.3s ease;
@@ -1328,16 +1460,14 @@ export default function Home() {
           flex-direction: column;
         }
         .mobile-menu.open {
-          max-height: 100vh; /* fixed 300px ki jagah, poori screen tak allow karo */
-          overflow-y: auto; /* agar content bahut lamba ho to scroll ho jaye */
-          padding: 10px 0 24px;
+          max-height: 300px;
+          padding: 10px 0;
         }
         .mobile-menu a {
           color: white;
           padding: 12px 24px;
           text-decoration: none;
           border-top: 1px solid rgba(255, 255, 255, 0.1);
-          flex-shrink: 0;
         }
 
         .hero-section {
@@ -1582,8 +1712,142 @@ export default function Home() {
           border-radius: 14px;
         }
 
-        .how-section {
-          background: linear-gradient(135deg, #1a0b33, #4a1a7a);
+        .phonepe-section {
+          background: radial-gradient(
+            circle at center,
+            #3a1568 0%,
+            #1a0b33 75%
+          );
+          height: 100vh;
+          width: 100%;
+          position: fixed;
+          overflow: hidden;
+
+        }
+
+        .phonepe-pin-inner {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 2;
+        }
+
+        .phonepe-rings {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 0;
+          height: 0;
+          z-index: 1;
+          pointer-events: none;
+        }
+        .ring {
+          position: absolute;
+          top: 0;
+          left: 0;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 50%;
+          width: 200px;
+          height: 200px;
+          transform: translate(-50%, -50%) scale(0.4);
+          animation: ringPulse 5s ease-out infinite;
+        }
+        .ring-1 {
+          animation-delay: 0s;
+        }
+        .ring-2 {
+          animation-delay: 1.25s;
+        }
+        .ring-3 {
+          animation-delay: 2.5s;
+        }
+        .ring-4 {
+          animation-delay: 3.75s;
+        }
+        @keyframes ringPulse {
+          0% {
+            transform: translate(-50%, -50%) scale(0.4);
+            opacity: 0.9;
+          }
+          100% {
+            transform: translate(-50%, -50%) scale(5);
+            opacity: 0;
+          }
+        }
+
+        .morph-shape {
+          position: relative;
+          background: rgba(255, 255, 255, 0.06);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 30px 20px;
+          will-change: width, height, border-radius;
+        }
+
+        .morph-title {
+          text-align: center;
+          margin-bottom: 30px;
+        }
+
+        .cards-viewport {
+          width: 100%;
+          max-width: 900px;
+          overflow: hidden;
+        }
+
+        .cards-track {
+          display: flex;
+          gap: 24px;
+          will-change: transform;
+        }
+
+        .phonepe-card {
+          flex: 0 0 260px;
+          background: rgba(255, 255, 255, 0.07);
+          border: 1px solid rgba(255, 255, 255, 0.14);
+          border-radius: 18px;
+          padding: 24px;
+          transition:
+            transform 0.3s ease,
+            background 0.3s ease;
+        }
+        .phonepe-card:hover {
+          transform: translateY(-6px);
+          background: rgba(255, 255, 255, 0.12);
+        }
+        .phonepe-card-number {
+          font-size: 1.5rem;
+          font-weight: 800;
+          color: #ffd200;
+        }
+        .phonepe-card-desc {
+          color: rgba(255, 255, 255, 0.7);
+          font-size: 0.88rem;
+        }
+
+        @media (max-width: 767px) {
+          .phonepe-card {
+            flex: 0 0 220px;
+            padding: 18px;
+          }
+          .morph-title h2 {
+            font-size: 1.4rem;
+          }
+          .cards-viewport {
+            max-width: 100%;
+            padding: 0 10px;
+          }
         }
         .step-card {
           background: rgba(255, 255, 255, 0.06);
@@ -1846,7 +2110,6 @@ export default function Home() {
 
           .mobile-cta-wrap {
             padding: 16px 24px;
-            flex-shrink: 0;
           }
 
           .feature-card {

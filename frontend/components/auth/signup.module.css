@@ -1,18 +1,28 @@
 .loginBox {
   position: relative;
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
+  max-height: 92vh;
+  overflow-y: auto;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
   border-radius: 26px;
-  padding: 46px 38px;
+  padding: 42px 36px;
   box-shadow: 0 30px 70px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   text-align: center;
   z-index: 2;
-  overflow: hidden;
   font-family: var(--font-inter), "Inter", sans-serif;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 210, 0, 0.4) transparent;
+}
+.loginBox::-webkit-scrollbar {
+  width: 6px;
+}
+.loginBox::-webkit-scrollbar-thumb {
+  background: rgba(255, 210, 0, 0.35);
+  border-radius: 10px;
 }
 
 .cardGlow {
@@ -29,9 +39,9 @@
 
 .iconWrap {
   position: relative;
-  width: 68px;
-  height: 68px;
-  margin: 0 auto 22px;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 18px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,23 +63,23 @@
 .iconEmoji {
   position: relative;
   z-index: 2;
-  font-size: 2.1rem;
+  font-size: 2rem;
 }
 
 .title {
   font-family: var(--font-sora), "Sora", sans-serif;
   color: white;
   font-weight: 800;
-  font-size: 1.7rem;
-  margin-bottom: 6px;
+  font-size: 1.55rem;
+  margin-bottom: 4px;
   position: relative;
   z-index: 1;
 }
 .subtitle {
   color: rgba(255, 255, 255, 0.55);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 400;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
   position: relative;
   z-index: 1;
 }
@@ -81,32 +91,45 @@
   background: rgba(255, 80, 80, 0.1);
   border: 1px solid rgba(255, 80, 80, 0.3);
   color: #ff9d9d;
-  font-size: 0.85rem;
+  font-size: 0.83rem;
   font-weight: 500;
-  padding: 11px 16px;
+  padding: 10px 14px;
   border-radius: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
+  text-align: left;
+}
+.successMsg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(80, 220, 130, 0.1);
+  border: 1px solid rgba(80, 220, 130, 0.3);
+  color: #7dfab0;
+  font-size: 0.83rem;
+  font-weight: 500;
+  padding: 10px 14px;
+  border-radius: 12px;
+  margin-bottom: 16px;
   text-align: left;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 22px;
   position: relative;
   z-index: 1;
 }
 
 .userBox {
   position: relative;
-   margin-top: 8px;   /* extra space upar label ke liye */
+  text-align: left;
 }
 .inputIcon {
   position: absolute;
   left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 0.9rem;
+  top: 22px;
+  font-size: 0.88rem;
   opacity: 0.5;
   z-index: 1;
 }
@@ -115,9 +138,9 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 13px;
-  padding: 16px 16px 16px 38px;
+  padding: 17px 14px 7px 38px;
   color: white;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-family: var(--font-inter), "Inter", sans-serif;
   outline: none;
   transition: border-color 0.25s ease, background 0.25s ease;
@@ -127,33 +150,28 @@
   background: rgba(255, 255, 255, 0.08);
 }
 .userBox label {
- position: absolute;
+  position: absolute;
   left: 38px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 17px;
   color: rgba(255, 255, 255, 0.45);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   pointer-events: none;
   transition: all 0.2s ease;
-  background: transparent;
 }
 .userBox input:focus + label,
 .userBox input:not(:placeholder-shown) + label {
-  top: -10px;
-  left: 14px;
-  font-size: 0.72rem;
+  top: 5px;
+  left: 15px;
+  font-size: 0.66rem;
   font-weight: 700;
-  padding: 0 6px;
-  background: #ffb900;   /* dark background — yellow text hamesha achhe se dikhega */
-  color: #3a1f5d;
-  transform: translateY(0);
-  border-radius: 7px;
+  color: #7b2fc9;
+  background: transparent;
 }
 .inputUnderline {
   position: absolute;
   bottom: 0;
-  left: 16px;
-  right: 16px;
+  left: 15px;
+  right: 15px;
   height: 2px;
   background: linear-gradient(90deg, #ffd200, #ff6fd8);
   transform: scaleX(0);
@@ -164,6 +182,64 @@
 .userBox input:focus ~ .inputUnderline {
   transform: scaleX(1);
 }
+.fieldError {
+  color: #ff9d9d;
+  font-size: 0.72rem;
+  margin-top: 5px;
+  min-height: 14px;
+}
+
+.termsRow {
+  text-align: left;
+}
+.checkboxWrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.checkboxWrap input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.checkboxCustom {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  margin-top: 1px;
+  position: relative;
+  transition: all 0.2s ease;
+}
+.checkboxWrap input:checked ~ .checkboxCustom {
+  background: linear-gradient(135deg, #ffd200, #ff6fd8);
+  border-color: transparent;
+}
+.checkboxWrap input:checked ~ .checkboxCustom::after {
+  content: "✓";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #3a1568;
+}
+.termsText {
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.4;
+}
+.termsText a {
+  color: #ffd200;
+  text-decoration: underline;
+  cursor: pointer;
+}
 
 .submitBtn {
   position: relative;
@@ -171,17 +247,17 @@
   background: linear-gradient(90deg, #ffd200, #ffb100);
   color: #3a1568;
   border: none;
-  padding: 16px;
+  padding: 15px;
   border-radius: 13px;
   font-family: var(--font-sora), "Sora", sans-serif;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.96rem;
   cursor: pointer;
   box-shadow: 0 6px 24px rgba(255, 210, 0, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 52px;
+  min-height: 50px;
   will-change: transform;
 }
 .submitBtn:disabled {
@@ -234,7 +310,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 26px 0 18px;
+  margin: 22px 0 16px;
   position: relative;
   z-index: 1;
 }
@@ -245,13 +321,13 @@
 }
 .divider p {
   color: rgba(255, 255, 255, 0.4);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   margin: 0;
 }
 
 .footerText {
   color: rgba(255, 255, 255, 0.55);
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 400;
   position: relative;
   z-index: 1;
@@ -270,10 +346,11 @@
 
 @media (max-width: 480px) {
   .loginBox {
-    padding: 34px 24px;
+    padding: 32px 22px;
     border-radius: 20px;
+    max-height: 88vh;
   }
   .title {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
 }

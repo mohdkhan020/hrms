@@ -61,20 +61,20 @@ export default function Sidebar() {
 
   const sidebarMenu = menuByRole[user.role] || [];
 
-  const roleColorMap: Record<string, string> = {
-    admin: "#f59e0b",
-    hr: "#22c55e",
-    employees: "#a78bfa",
-  };
-  const roleColor = roleColorMap[user.role] ?? "#6366f1";
+  // const roleColorMap: Record<string, string> = {
+  //   admin: "#f59e0b",
+  //   hr: "#22c55e",
+  //   employees: "#a78bfa",
+  // };
+  // const roleColor = roleColorMap[user.role] ?? "#6366f1";
 
-  const initials =
-    (user?.fullName as string)
-      ?.split(" ")
-      .map((n: string) => n[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase() ?? "U";
+  // const initials =
+  //   (user?.fullName as string)
+  //     ?.split(" ")
+  //     .map((n: string) => n[0])
+  //     .join("")
+  //     .slice(0, 2)
+  //     .toUpperCase() ?? "U";
 
   const logout = async () => {
     await axios.post(

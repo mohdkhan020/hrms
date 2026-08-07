@@ -44,11 +44,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loadUser();
   }, []);
 
-  // 🚪 Logout
   async function logout() {
-    await api.post("/auth/logout");
-    setUser(null);
-    window.location.href = "/login";
+    try {
+      await api.post("/auth/logout");
+    } catch (err) {
+      console.log("Logout API failed:", err);
+    } finally {
+      setUser(null);
+      window.location.href = "/login";
+    }
   }
 
   return (
