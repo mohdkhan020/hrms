@@ -82,18 +82,41 @@ export const loginController = async (req, res) => {
       return res.status(500).json({ error: "Server config error" });
     }
 
+    // const token = jwt.sign(
+    //   { id: user._id },
+    //   process.env.JWT_SECRET,
+    //   { expiresIn: "1m" }, // short expiry (best practice)
+    // );
+
     // ✅ Create JWT (minimal payload)
     const token = jwt.sign(
-      { id: user._id },
+      {
+        id: user._id,
+        role: user.role, // ✅ add this
+        email: user.email, // optional
+      },
       process.env.JWT_SECRET,
-      { expiresIn: "1m" }, // short expiry (best practice)
+      {
+        expiresIn: "15m",
+      },
     );
 
     // ✅ Refresh Token (long life)
+    // const refreshToken = jwt.sign(
+    //   { id: user._id },
+    //   process.env.JWT_REFRESH_SECRET,
+    //   { expiresIn: "7d" },
+    // );
     const refreshToken = jwt.sign(
-      { id: user._id },
+      {
+        id: user._id,
+        role: user.role,
+        email: user.email,
+      },
       process.env.JWT_REFRESH_SECRET,
-      { expiresIn: "7d" },
+      {
+        expiresIn: "7d",
+      },
     );
 
     //Convert RefreshToken into hashFormat for safety purpose
@@ -155,23 +178,49 @@ export const loginController = async (req, res) => {
 
 export const logoutController = async (req, res) => {
   try {
-    const userId = req.user.id;
-console.log("userId====>>>>",userId)
-    // ✅ refresh token DB se hatao
-    await UserModel.findByIdAndUpdate(userId, {
-      refreshToken: null,
-    });
+    // const userId = req.user.id;
+    // console.log("userId====>>>>", userId);
+    // // ✅ refresh token DB se hatao
+    // await UserModel.findByIdAndUpdate(userId, {
+    //   refreshToken: null,
+    // });
+    const refreshToken = req.cookies.refreshToken;
 
+    if (refreshToken) {
+      try {
+        const decoded = jwt.verify(
+          refreshToken,
+          process.env.JWT_REFRESH_SECRET,
+        );
+
+        await UserModel.findByIdAndUpdate(decoded.id, {
+          refreshToken: null,
+        });
+      } catch (err) {
+        // Ignore
+      }
+    }
+
+    // res.clearCookie("token", {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "strict",
+    // });
     res.clearCookie("token", {
       httpOnly: true,
-      secure: true,
-      sameSite: "strict",
+      secure: false,
+      sameSite: "lax",
     });
 
     // ✅ cookie clear karo
+    // res.clearCookie("refreshToken", {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "strict",
+    // });
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
     });
 

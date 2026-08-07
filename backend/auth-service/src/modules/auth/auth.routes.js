@@ -17,7 +17,8 @@ router.post("/signup", signUpLimiter, signUpController);
 router.post('/login', loginController);   // Add /auth prefix here
 router.post("/verify-email", verifyEmailController);
 router.post("/refresh-token", refreshTokenController);
-router.post("/logout", authMiddleware, logoutController);
+// router.post("/logout", authMiddleware, logoutController);
+router.post("/logout", logoutController);
 
 
 //GET Routes
